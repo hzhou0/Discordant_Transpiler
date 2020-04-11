@@ -54,13 +54,15 @@ class Lexer:
         self.string = string
         self.replaced = []
 
-    def convert_tabs(self):
+    def sanitize(self):
         """
         replaces tabs with 8 spaces, as per unix rules
         """
         self.string = self.string.replace("\t", "        ")
+        self.string = self.string.replace("\r\n", "\n")
+        self.string = self.string.replace("\r", "\n")
 
-    def mark(self):
+    def mark_com(self):
         """
         replaces preprocessor commands, string literals, and comments
         with tokens to later replace
@@ -74,20 +76,41 @@ class Lexer:
             self.string = self.string.replace(str(match), str(i) + token + str(i), 1)
             i += 1
 
-    def replace(self):
+    def mark(self, regex, token):
+        """
+        replaces preprocessor commands, string literals, and comments
+        with tokens to later replace
+        """
+        i = 0
+        replaced = re.findall(regex, self.string)
+        for match in replaced:
+            #   self.string=re.sub(match, str(i) + token + str(i), self.string, 1)
+            self.string = self.string.replace(str(match), str(i) + token + str(i), 1)
+            i += 1
+        return replaced
+
+    def replace_com(self):
         """
         replace tokenized string literals, comments
         and preprocessors
         """
         token = "!!!"
         for i in range(len(self.replaced)):
-            regex = str(i) + token + str(i)
             self.string = self.string.replace(str(i) + token + str(i), self.replaced[i], 1)
 
-    def else_if(self):
+    def replace(self, token, storage):
         """
-            Compiles pythonic else if statement
-            into c++ style
+        replace tokenized string literals, comments
+        and preprocessors
+        """
+        for i in range(len(self.replaced)):
+            self.string = self.string.replace(str(i) + token + str(i), storage[i], 1)
+
+    def cat_by_indent(self):
+        """
+        Returns a list of ExpBox classes,
+        containing statements sorted by indentation level,
+        from deepest to shallowest
         """
         regex = r"else\s+?if[^:]*?:\n"
         matches = re.finditer(regex, self.string)
@@ -111,7 +134,6 @@ class Lexer:
                 sorted_expr.append(ExpBox(depth, match))
 
         # convert starting from the most indented to the least indented
-
         def indent_depth(exp_box):
             """
             function to sort SORTED_EXPR
@@ -120,16 +142,47 @@ class Lexer:
             return exp_box.depth
 
         sorted_expr.sort(reverse=True, key=indent_depth)
-        for box in sorted_expr:
-            #  print(box.depth)
-            #  print(box.expr_list)
-            for expr in box.expr_list:
-                # read one line from end of else_if statement
-                line = readline(self.string[expr.end() + 1:])
-                line_count = 0
-                spaces = whitespace(line)
-                # if indented continue
-                while spaces > box.depth:
-                    line = readline(self.string[expr.end() + 1:])
-                    spaces = whitespace(line)
-                print(spaces)
+        return sorted_expr
+
+    def else_if(self):
+        """
+            Compiles pythonic else if statement
+            into c++ style
+        """
+        regex = r"else\s+?if[^:]*?:\n"
+        x = 0
+        while x < len(re.findall(regex, self.string)):
+            sorted_expr = self.cat_by_indent()
+            i = 0
+            c=len(sorted_expr[0].expr_list)
+            while x+1 > c:
+                i += 1
+                c += len(sorted_expr[i].expr_list)
+            box_num = i
+            ele_num = x
+            for i in range(i):
+                ele_num -= len(sorted_expr[i].expr_list)
+
+            expr = sorted_expr[box_num].expr_list[ele_num]
+            depth = self.cat_by_indent()[0].depth
+            # read one line from end of else_if statement
+            i = 0
+            lines = ""
+            while True:
+                line = readline(self.string[expr.end() + i + 1:])
+                i += len(line) + 2
+                indents = whitespace(line)
+                if indents <= depth:
+                    break
+                lines += line
+            spacing = ""
+            for i in range(depth):
+                spacing += " "
+            payload = spacing + "{\n" + lines + spacing + "}"
+            self.string = self.string[:expr.end()] + payload + self.string[expr.end() + len(lines) + 1:]
+            x += 1
+            print(self.string)
+        # lines = []
+        # for i in range(line_count):
+        #    lines.append(self.string[expr.end() + 1:])
+        # str_lines = ''.join(lines)

@@ -18,17 +18,13 @@ int main()
             ++vowels;
         }
         else if ((line[i]>='a'&& line[i]<='z') ||(line[i]>='A'&& line[i]<='Z')):
-        {
             ++consonants;
-        }
         else if line[i]>='0' && line[i]<='9':
             ++digits;
-            else if line[i]>='0' && line[i]<='9':
-                ++digits;
+            else if line[i]>='0' && line[i]<='46':
+                ++lmao;
         else if (line[i]==' '):
-        {
             ++spaces;
-        }
     }
     //heelo im line comment
     /*
