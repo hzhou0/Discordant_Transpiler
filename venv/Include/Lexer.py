@@ -7,29 +7,25 @@ def readline(string):
     """
     x = ""
     i = 0
-    while string[i] != "\n" and i - 1 <= len(string):
-        i += 1
-        x = x + string[i]
+    while i < len(string):
+        if string[i] != "\n":
+            x += string[i]
+            i += 1
+        else:
+            return x + "\n"
     return x
 
 
-def whitespace(string, front=True):
+def whitespace(string):
     """
     return the number of whitespace chars
     in front or behind the string
     :param string: read from this
-    :param front: if to start reading
-    from front of string
     """
-    if front:
-        x = 1
-        i = 0
-    else:
-        x = -1
-        i = -1
-    while string[i] == " " and abs(i) <= len(string):
-        i += x
-    return abs(i)
+    i = 0
+    while string and string[i] == " " and i < len(string):
+        i += 1
+    return i
 
 
 class ExpBox:
@@ -53,6 +49,7 @@ class Lexer:
     def __init__(self, string):
         self.string = string
         self.replaced = []
+        self.replaced_statements = []
 
     def sanitize(self):
         """
@@ -61,6 +58,7 @@ class Lexer:
         self.string = self.string.replace("\t", "        ")
         self.string = self.string.replace("\r\n", "\n")
         self.string = self.string.replace("\r", "\n")
+        self.string = self.string.replace("\n\n", "\n")
 
     def mark_com(self):
         """
@@ -76,18 +74,22 @@ class Lexer:
             self.string = self.string.replace(str(match), str(i) + token + str(i), 1)
             i += 1
 
-    def mark(self, regex, token):
+    def mark_statements(self):
         """
         replaces preprocessor commands, string literals, and comments
         with tokens to later replace
         """
+        regex = r"((?:if|for|while|else\s+?if)[\s(]+?[\s\S]*?:\n)|(else\s*?:\n)"
+        token = "@~@"
         i = 0
-        replaced = re.findall(regex, self.string)
-        for match in replaced:
+        matches = re.finditer(regex, self.string)
+        self.replaced_statements = []
+        for match in matches:
+            self.replaced_statements.append(match.group())
+        for match in self.replaced_statements:
             #   self.string=re.sub(match, str(i) + token + str(i), self.string, 1)
-            self.string = self.string.replace(str(match), str(i) + token + str(i), 1)
+            self.string = self.string.replace(str(match), str(i) + token + str(i) + "\n", 1)
             i += 1
-        return replaced
 
     def replace_com(self):
         """
@@ -98,21 +100,21 @@ class Lexer:
         for i in range(len(self.replaced)):
             self.string = self.string.replace(str(i) + token + str(i), self.replaced[i], 1)
 
-    def replace(self, token, storage):
+    def replace_statements(self):
         """
         replace tokenized string literals, comments
         and preprocessors
         """
-        for i in range(len(self.replaced)):
-            self.string = self.string.replace(str(i) + token + str(i), storage[i], 1)
+        token = "@~@"
+        for i in range(len(self.replaced_statements)):
+            self.string = self.string.replace(str(i) + token + str(i), self.replaced_statements[i], 1)
 
-    def cat_by_indent(self):
+    def cat_by_indent(self, regex):
         """
         Returns a list of ExpBox classes,
         containing statements sorted by indentation level,
         from deepest to shallowest
         """
-        regex = r"else\s+?if[^:]*?:\n"
         matches = re.finditer(regex, self.string)
         sorted_expr = []
         for match in matches:
@@ -128,10 +130,10 @@ class Lexer:
             for box in sorted_expr:
                 if depth == box.depth:
                     is_sorted = True
-                    box.expr_list.append(match)
+                    box.expr_list.append(match.group())
             # if not create box with match
             if not is_sorted:
-                sorted_expr.append(ExpBox(depth, match))
+                sorted_expr.append(ExpBox(depth, match.group()))
 
         # convert starting from the most indented to the least indented
         def indent_depth(exp_box):
@@ -144,45 +146,61 @@ class Lexer:
         sorted_expr.sort(reverse=True, key=indent_depth)
         return sorted_expr
 
-    def else_if(self):
+    def statements(self):
         """
             Compiles pythonic else if statement
             into c++ style
         """
-        regex = r"else\s+?if[^:]*?:\n"
-        x = 0
-        while x < len(re.findall(regex, self.string)):
-            sorted_expr = self.cat_by_indent()
-            i = 0
-            c=len(sorted_expr[0].expr_list)
-            while x+1 > c:
-                i += 1
-                c += len(sorted_expr[i].expr_list)
-            box_num = i
-            ele_num = x
-            for i in range(i):
-                ele_num -= len(sorted_expr[i].expr_list)
+        # swap statements for marks
+        self.mark_statements()
+        expBox_list = self.cat_by_indent(r"\d@~@\d\n")
+        file = open("marked.txt", "w")
+        file.write(self.string)
+        file.close()
+        targets = []
+        payloads = []
+        # iterate through all matches, deepest indented ones first
+        for expBox in expBox_list:
+            for expr in expBox.expr_list:
+                # retry the match, swaps change match span
+                exp = re.search(expr, self.string)
+                lines = ""
+                # start reading immediately after the match
+                string = self.string[exp.end():]
+                # keep reading until text unindents
+                while True:
+                    line = readline(string)
+                    string = string[len(line):]
+                    indents = whitespace(line)
+                    if indents <= expBox.depth:
+                        break
+                    lines += line
+                # target is all text indented
+                target = self.string[exp.start():exp.end() + len(lines)]
+                # wrapped intended in curly brackets
+                spacing = ""
+                for i in range(expBox.depth):
+                    spacing += " "
+                payload = exp.group()[:-1] + "{\n" + lines[:-1] + "\n" + spacing + "}\n"
+                # replace
+                self.string = self.string.replace(target, payload)
+        # iterate through
+        print(self.replaced_statements)
+        for i, statement in enumerate(self.replaced_statements):
+            # if statement is else statement, cut : and skip
+            regex = r"else\s*?:\n"
+            if re.search(regex, statement):
+                self.replaced_statements[i] = statement[:-2]
+                continue
+            self.replaced_statements[i] = statement[:-2] + " )"
+            regex = r"^(?:if|for|while|else\s+?if)[\s(]"
+            target = re.search(regex, statement).group()
+            payload = target + "( "
+            self.replaced_statements[i] = self.replaced_statements[i].replace(target, payload)
+        self.replace_statements()
+        print(self.string)
 
-            expr = sorted_expr[box_num].expr_list[ele_num]
-            depth = self.cat_by_indent()[0].depth
-            # read one line from end of else_if statement
-            i = 0
-            lines = ""
-            while True:
-                line = readline(self.string[expr.end() + i + 1:])
-                i += len(line) + 2
-                indents = whitespace(line)
-                if indents <= depth:
-                    break
-                lines += line
-            spacing = ""
-            for i in range(depth):
-                spacing += " "
-            payload = spacing + "{\n" + lines + spacing + "}"
-            self.string = self.string[:expr.end()] + payload + self.string[expr.end() + len(lines) + 1:]
-            x += 1
-            print(self.string)
-        # lines = []
-        # for i in range(line_count):
-        #    lines.append(self.string[expr.end() + 1:])
-        # str_lines = ''.join(lines)
+    # lines = []
+    # for i in range(line_count):
+    #    lines.append(self.string[expr.end() + 1:])
+    # str_lines = ''.join(lines)
