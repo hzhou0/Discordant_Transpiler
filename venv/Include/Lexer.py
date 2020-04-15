@@ -23,6 +23,8 @@ def whitespace(string):
     :param string: read from this
     """
     i = 0
+    if string.strip() == "":
+        return float("inf")
     while string and string[i] == " " and i < len(string):
         i += 1
     return i
@@ -59,13 +61,22 @@ class Lexer:
         self.string = self.string.replace("\r\n", "\n")
         self.string = self.string.replace("\r", "\n")
         self.string = self.string.replace("\n\n", "\n")
+        regex = r"""//.*\n"""
+        # delete all comments
+        line_comments = re.findall(regex, self.string)
+        for comment in line_comments:
+            self.string = self.string.replace(str(comment), "\n", 1)
+        regex = r"""\/\*(?:[\s\S]*?)\*\/"""
+        block_comments = re.findall(regex, self.string)
+        for comment in block_comments:
+            self.string = self.string.replace(str(comment), "", 1)
+
 
     def mark_com(self):
         """
-        replaces preprocessor commands, string literals, and comments
-        with tokens to later replace
+        replaces preprocessor commands and string literals to later replace
         """
-        regex = r"""\/\*(?:[\s\S]*?)\*\/|//.*\n|\#.*?\n|\r"""
+        regex = r"""(?:'|\")(?:[^\"\\]|\\.)*?(?:\"|')|\#.*?\n"""
         token = "!!!"
         i = 0
         self.replaced = re.findall(regex, self.string)
@@ -79,7 +90,7 @@ class Lexer:
         replaces preprocessor commands, string literals, and comments
         with tokens to later replace
         """
-        regex = r"((?:if|for|while|else\s+?if)[\s(]+?[\s\S]*?:\n)|(else\s*?:\n)"
+        regex = r"((?:if|for|while|do|else\s+?if)[\s(]+?[\s\S]*?:\n)|(else\s*?:\n)"
         token = "@~@"
         i = 0
         matches = re.finditer(regex, self.string)
@@ -169,6 +180,8 @@ class Lexer:
                 string = self.string[exp.end():]
                 # keep reading until text unindents
                 while True:
+                    if not string:
+                        break
                     line = readline(string)
                     string = string[len(line):]
                     indents = whitespace(line)
@@ -181,11 +194,12 @@ class Lexer:
                 spacing = ""
                 for i in range(expBox.depth):
                     spacing += " "
-                payload = exp.group()[:-1] + "{\n" + lines[:-1] + "\n" + spacing + "}\n"
+                if lines[-1] == "\n":
+                    lines = lines[:-1]
+                payload = exp.group()[:-1] + "{\n" + lines + "\n" + spacing + "}\n"
                 # replace
                 self.string = self.string.replace(target, payload)
         # iterate through
-        print(self.replaced_statements)
         for i, statement in enumerate(self.replaced_statements):
             # if statement is else statement, cut : and skip
             regex = r"else\s*?:\n"
@@ -193,13 +207,14 @@ class Lexer:
                 self.replaced_statements[i] = statement[:-2]
                 continue
             self.replaced_statements[i] = statement[:-2] + " )"
-            regex = r"^(?:if|for|while|else\s+?if)[\s(]"
+            regex = r"^(?:if|for|while|do|else\s+?if)[\s(]"
             target = re.search(regex, statement).group()
             payload = target + "( "
             self.replaced_statements[i] = self.replaced_statements[i].replace(target, payload)
         self.replace_statements()
-        print(self.string)
 
+    def dynamic_types(self):
+        self.string = self.string.replace("@", "discordance::var")
     # lines = []
     # for i in range(line_count):
     #    lines.append(self.string[expr.end() + 1:])

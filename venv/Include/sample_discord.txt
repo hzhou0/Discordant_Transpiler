@@ -14,7 +14,7 @@ int main()
            line[i]=='E' || line[i]=='I' || line[i]=='O' ||
            line[i]=='U'):
                 ++vowels;
-        if ((line[i]>='a'&& line[i]<='z') ||(line[i]>='A'&& line[i]<='Z')):
+        if((line[i]>='a'&& line[i]<='z') ||(line[i]>='A'&& line[i]<='Z')):
             ++consonants;
         else if line[i]>='0' && line[i]<='9':
             ++digits;
@@ -36,3 +36,5 @@ int main()
 
     return 0;
 }
+if ((line[i]>='a'&& line[i]<='z') ||(line[i]>='A'&& line[i]<='Z')):
+    ++consonants;
