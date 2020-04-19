@@ -1,7 +1,7 @@
 # Discordant_Transpiler
 The Transpiler for Discordant, a language that compiles to c++, 
 currently being written in Python, though I might move it later
-##Features Being Considered
+## Features Being Considered
 1.  if/while/for... statements by indentation instead of curly brackets(done)
 2.  limited dynamic typing(done)
 3.  list comprehensions(done)
