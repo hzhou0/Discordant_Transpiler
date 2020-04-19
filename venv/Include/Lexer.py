@@ -50,17 +50,14 @@ class Lexer:
 
     def __init__(self, string):
         self.string = string
-        self.replaced = []
+        self.replaced_pre = []
+        self.replaced_literals = []
         self.replaced_statements = []
 
     def sanitize(self):
         """
         replaces tabs with 8 spaces, as per unix rules
         """
-        self.string = self.string.replace("\t", "        ")
-        self.string = self.string.replace("\r\n", "\n")
-        self.string = self.string.replace("\r", "\n")
-        self.string = self.string.replace("\n\n", "\n")
         regex = r"""//.*\n"""
         # delete all comments
         line_comments = re.findall(regex, self.string)
@@ -70,36 +67,37 @@ class Lexer:
         block_comments = re.findall(regex, self.string)
         for comment in block_comments:
             self.string = self.string.replace(str(comment), "", 1)
-
+        #  remove trailing whitespace
+        self.string = re.sub(r"[ \t]+$", "\n", self.string, flags=re.MULTILINE)
+        #  substitute tabs for 8 spaces
+        self.string = self.string.replace("\t", "        ")
+        #  regularize lines separators
+        self.string = self.string.replace("\r\n", "\n")
+        self.string = self.string.replace("\r", "\n")
+        #  remove blank lines
+        lines = self.string.split("\n")
+        lines = filter(lambda x: not re.match(r'^\s*$', x), lines)
+        self.string = "\n".join(lines)
 
     def mark_com(self):
         """
         replaces preprocessor commands and string literals to later replace
         """
-        regex = r"""(?:'|\")(?:[^\"\\]|\\.)*?(?:\"|')|\#.*?\n"""
+        regex = r"""\#.*?\n"""
         token = "!!!"
         i = 0
-        self.replaced = re.findall(regex, self.string)
-        for match in self.replaced:
-            #   self.string=re.sub(match, str(i) + token + str(i), self.string, 1)
-            self.string = self.string.replace(str(match), str(i) + token + str(i), 1)
-            i += 1
-
-    def mark_statements(self):
-        """
-        replaces preprocessor commands, string literals, and comments
-        with tokens to later replace
-        """
-        regex = r"((?:if|for|while|do|else\s+?if)[\s(]+?[\s\S]*?:\n)|(else\s*?:\n)"
-        token = "@~@"
-        i = 0
-        matches = re.finditer(regex, self.string)
-        self.replaced_statements = []
-        for match in matches:
-            self.replaced_statements.append(match.group())
-        for match in self.replaced_statements:
+        self.replaced_pre = re.findall(regex, self.string)
+        for match in self.replaced_pre:
             #   self.string=re.sub(match, str(i) + token + str(i), self.string, 1)
             self.string = self.string.replace(str(match), str(i) + token + str(i) + "\n", 1)
+            i += 1
+        regex = r"""(?:'|\")(?:[^\"\\]|\\.)*?(?:\"|')"""
+        token = "!!!!"
+        i = 0
+        self.replaced_literals = re.findall(regex, self.string)
+        for match in self.replaced_literals:
+            #   self.string=re.sub(match, str(i) + token + str(i), self.string, 1)
+            self.string = self.string.replace(str(match), str(i) + token + str(i), 1)
             i += 1
 
     def replace_com(self):
@@ -108,8 +106,34 @@ class Lexer:
         and preprocessors
         """
         token = "!!!"
-        for i in range(len(self.replaced)):
-            self.string = self.string.replace(str(i) + token + str(i), self.replaced[i], 1)
+        for i in range(len(self.replaced_pre)):
+            self.string = self.string.replace(str(i) + token + str(i) + "\n", self.replaced_pre[i], 1)
+        token = "!!!!"
+        for i in range(len(self.replaced_literals)):
+            self.string = self.string.replace(str(i) + token + str(i), self.replaced_literals[i], 1)
+
+    def mark_statements(self):
+        """
+        replaces preprocessor commands, string literals, and comments
+        with tokens to later replace
+        """
+        regex = r"((?:if|for|while|do|else\s+?if)[\s(]+?[\s\S]*?:\n)" \
+                r"|(else\s*?:\n)" \
+                r"|\b[\w]+[^\w;]+[\w]+\s*\([^;]*?\)\s*:\n"
+        token = "@~@"
+        i = 0
+        matches = re.finditer(regex, self.string)
+        self.replaced_statements = []
+        for match in matches:
+            if match:
+                regex = r"\b(?:else\s+?if|if|for|while|else|switch|case)\b" \
+                        r"|\b[\w]+[^\w;]+[\w]+\s*\([^;]*?\)\s*:\n"
+                if len(re.findall(regex, match.group())) < 2:
+                    self.replaced_statements.append(match.group())
+        for match in self.replaced_statements:
+            #   self.string=re.sub(match, str(i) + token + str(i), self.string, 1)
+            self.string = self.string.replace(str(match), str(i) + token + str(i) + "\n", 1)
+            i += 1
 
     def replace_statements(self):
         """
@@ -168,8 +192,6 @@ class Lexer:
         file = open("marked.txt", "w")
         file.write(self.string)
         file.close()
-        targets = []
-        payloads = []
         # iterate through all matches, deepest indented ones first
         for expBox in expBox_list:
             for expr in expBox.expr_list:
@@ -201,20 +223,37 @@ class Lexer:
                 self.string = self.string.replace(target, payload)
         # iterate through
         for i, statement in enumerate(self.replaced_statements):
-            # if statement is else statement, cut : and skip
-            regex = r"else\s*?:\n"
-            if re.search(regex, statement):
+            # else statement
+            if re.search(r"else\s*?:\n", statement):
                 self.replaced_statements[i] = statement[:-2]
-                continue
-            self.replaced_statements[i] = statement[:-2] + " )"
-            regex = r"^(?:if|for|while|do|else\s+?if)[\s(]"
-            target = re.search(regex, statement).group()
-            payload = target + "( "
-            self.replaced_statements[i] = self.replaced_statements[i].replace(target, payload)
+            # if/for/while/do/else if statements
+            elif re.search(r"^(?:if|for|while|do|else\s+?if)[\s(]", statement):
+                self.replaced_statements[i] = statement[:-2] + " )"
+                target = re.search(r"^(?:if|for|while|do|else\s+?if)[\s(]", statement).group()
+                payload = target + "( "
+                self.replaced_statements[i] = self.replaced_statements[i].replace(target, payload)
+                #   for loop, swap in for : if range-based loop
+                if re.search(r"^for[\s(]", self.replaced_statements[i]):
+                    x = statement[:-2]
+                    x = re.sub(r"^for[\s(]", "", x)
+                    x = re.sub(r":", " in ", x)
+                    x = re.split(r" in ", x)[0]
+                    words = re.findall(r"[*&\w]+\b", x)
+                    if len(words) == 1:
+                        self.replaced_statements[i] = self.replaced_statements[i] \
+                            .replace(" " + words[0] + " ", " auto " + words[0] + " ", 1)
+                    if 'const' in words and len(words) == 2:
+                        self.replaced_statements[i] = self.replaced_statements[i] \
+                            .replace(" " + words[1] + " ", " auto " + words[1] + " ", 1)
+                    self.replaced_statements[i] = re.sub(r"\bin\b", ":", self.replaced_statements[i])
+
+            # function declaration
+            else:
+                self.replaced_statements[i] = statement[:-2]
         self.replace_statements()
 
-    def dynamic_types(self):
-        self.string = self.string.replace("@", "discordance::var")
+    def dynamic_type(self):
+        self.string = self.string.replace("@ ", "discordance::var ")
     # lines = []
     # for i in range(line_count):
     #    lines.append(self.string[expr.end() + 1:])

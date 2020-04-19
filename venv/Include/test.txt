@@ -2,9 +2,9 @@
 #include "chassis.h"
 #include <cmath>
 #include <iostream>
-
 //Exponential Drive Function
-int exponential (int joystickVal, float driveExp, int joyDead, int motorMin) { //e
+
+static * int exponential (int joystickVal, float driveExp, int joyDead, int motorMin): //e
 		    int joySign;
 		    int joyMax = 128 - joyDead;
 		    int joyLive = abs(joystickVal) - joyDead;
@@ -13,7 +13,7 @@ int exponential (int joystickVal, float driveExp, int joyDead, int motorMin) { /
 		    else {joySign = 0;}
 		    int power = joySign * (motorMin + ((127 - motorMin) * (pow(joyLive, driveExp) / pow(joyMax, driveExp))));
 		    return power;
-}
+
 
 
 void Chassis::OP_Chassis(void){
