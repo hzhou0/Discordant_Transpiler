@@ -269,9 +269,11 @@ class File:
         self.string = self.string.replace("@ ", "discordance::var ")
 
     def vector(self):
-        vector_decls = re.findall(r"(?:[\w:.]+\s+)*[^\w;]*[\w]+(?:\[[ ?\d]*\? *\])+", self.string)
+        # default initialization
+        vector_decls = re.findall(r"(?:[\w:.]+\s+)*[^\w;]*[\w]+(?:\[[ ?\d]*\? *\])+\s*;", self.string)
         # decl = *type* var [?]
         for decl in vector_decls:
+            decl=decl[:-1].strip()
             # isolate var[?]
             index_operators = re.findall(r"(?:\[[ ?\d]*\? *\])", decl)
             typename = ""
@@ -300,6 +302,35 @@ class File:
             var = re.sub(r"(?:\[[ ?\d]*\? *\])+", "", var)
             target = decl
             payload = typename + " " + var + constructor
+            self.string = self.string.replace(target, payload)
+        # assignment initialization
+        vector_decls = re.findall(r"(?:[\w:.]+\s+)*[^\w;]*[\w]+(?:\[[ ?\d]*\? *\])+\s*[={]", self.string)
+        for decl in vector_decls:
+            decl=decl[:-1].strip()
+            # isolate var[?]
+            index_operators = re.findall(r"(?:\[[ ?\d]*\? *\])", decl)
+            typename = ""
+            # find type recursively
+            for match in index_operators:
+                # if approx length given
+                size = 0
+                if re.search(r"\[ *(\d+)\? *\]", match):
+                    container = "discordance::vector"
+                    size = re.search(r"\[ *(\d+)\? *\]", match).group(1)
+                # if unknown length
+                else:
+                    container = "discordance::deque"
+                    init = ""
+                if typename:
+                    typename = container + "<" + typename + ">"
+                else:
+                    x = re.search(r"[\w]+(?:\[[ ?\d]*\? *\])+", decl).group()
+                    x = decl[:-len(x)]
+                    typename = container + "<" + x + ">"
+            var = re.search(r"[\w]+(?:\[[ ?\d]*\? *\])+", decl).group()
+            var = re.sub(r"(?:\[[ ?\d]*\? *\])+", "", var)
+            target = decl
+            payload = typename + " " + var
             self.string = self.string.replace(target, payload)
 
     def process(self):
