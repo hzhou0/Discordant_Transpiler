@@ -1,10 +1,9 @@
 int main():
-
     @ line;
     int vowels, consonants, digits, spaces;
 
     vowels =  consonants = digits = spaces = 0;
-
+    int as[100?][?][?];
     cout << "Enter a line of string: ";
     getline(cin, line);
 

@@ -42,17 +42,30 @@ class ExpBox:
         self.expr_list.append(first_str)
 
 
-class Lexer:
+class File:
     """
     Container for discordant source code,
     and encapsulates compilation methods
     """
 
-    def __init__(self, string):
-        self.string = string
+    def __init__(self, address):
+        self.address = address
+        self.file = open(address, "r")
+        self.string = self.file.read()
         self.replaced_pre = []
         self.replaced_literals = []
         self.replaced_statements = []
+        self.processed = False
+
+    def sync(self):
+        """
+        synchronize self.string with file on disk
+        """
+        self.file.close()
+        self.file = open(self.address, "w")
+        self.file.write(self.string)
+        self.file.close()
+        self.file = open(self.address, "r")
 
     def sanitize(self):
         """
@@ -254,6 +267,59 @@ class Lexer:
 
     def dynamic_type(self):
         self.string = self.string.replace("@ ", "discordance::var ")
+
+    def vector(self):
+        vector_decls = re.findall(r"(?:[\w:.]+\s+)*[^\w;]*[\w]+(?:\[[ ?\d]*\? *\])+", self.string)
+        # decl = *type* var [?]
+        for decl in vector_decls:
+            # isolate var[?]
+            index_operators = re.findall(r"(?:\[[ ?\d]*\? *\])", decl)
+            typename = ""
+            constructor = ""
+            # find type recursively
+            for match in index_operators:
+                # if approx length given
+                size = 0
+                if re.search(r"\[ *(\d+)\? *\]", match):
+                    container = "discordance::vector"
+                    size = re.search(r"\[ *(\d+)\? *\]", match).group(1)
+                # if unknown length
+                else:
+                    container = "discordance::deque"
+                    init = ""
+                if typename:
+                    typename = container + "<" + typename + ">"
+                    constructor = typename + "(" + str(size) + "," + constructor + ")"
+                else:
+                    x = re.search(r"[\w]+(?:\[[ ?\d]*\? *\])+", decl).group()
+                    x = decl[:-len(x)]
+                    typename = container + "<" + x + ">"
+                    constructor = typename + "(" + str(size) + ")"
+            constructor = constructor[len(typename):]
+            var = re.search(r"[\w]+(?:\[[ ?\d]*\? *\])+", decl).group()
+            var = re.sub(r"(?:\[[ ?\d]*\? *\])+", "", var)
+            target = decl
+            payload = typename + " " + var + constructor
+            self.string = self.string.replace(target, payload)
+
+    def process(self):
+        self.sanitize()
+        self.mark_com()
+        self.statements()
+        self.replace_com()
+        self.dynamic_type()
+        self.vector()
+        self.processed = True
+
+    def includes(self):
+        if not self.processed:
+            raise ValueError("Not yet processed!")
+        includes = []
+        for preproc in self.replaced_pre:
+            if re.search(r"#\s*include", preproc) and not re.search(r"<\w+>", preproc):
+                includes.append(preproc)
+        return includes
+
     # lines = []
     # for i in range(line_count):
     #    lines.append(self.string[expr.end() + 1:])

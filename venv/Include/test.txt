@@ -1,14 +1,16 @@
 #include "main.h"
-#include "chassis.h"
+#include [chassis.dis]
 #include <cmath>
 #include <iostream>
 //Exponential Drive Function
 
-static * int exponential (int joystickVal, float driveExp, int joyDead, int motorMin): //e
+@ exponential (int joystickVal, float driveExp, int joyDead, int motorMin): //e
 		    int joySign;
 		    int joyMax = 128 - joyDead;
 		    int joyLive = abs(joystickVal) - joyDead;
-		    if (joystickVal > 0) {joySign = 1;}
+            if  joystickVal > 0:
+                joySign = 1;
+
 		    else if (joystickVal < 0) {joySign = -1;}
 		    else {joySign = 0;}
 		    int power = joySign * (motorMin + ((127 - motorMin) * (pow(joyLive, driveExp) / pow(joyMax, driveExp))));
