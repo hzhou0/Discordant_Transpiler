@@ -1,17 +1,34 @@
-# Discordant_Transpiler
-The Transpiler for Discordant, a language that compiles to c++, 
-currently being written in Python, though I might move it later
-## Features Being Considered
-1.  if/while/for... statements by indentation instead of curly brackets(done)
-2.  limited dynamic typing(done)
-3.  list comprehensions(done)
-4.  better syntax for vectors and stdlib arrays(currently implementing)
-5.  function declaration by indentation(done)
-6.  revamped include system with automatically generated header files(really not sure)
-    *requires Lzz, which is bootstrapped in a whack way and is also written with platform-specific code
-7.  implicit multithreading(this is never going to happen)
-8.  an **when** statement;multithreaded arbitrary state listener(yeah, no idea either: little more likely)
-9.  pythonic array slicing(probably okay)
-10. compile dependency tree
-
-
+# Discordant Transpiler
+The transpiler for **Discordant**, a language that compiles to C++, written in Python. 
+##Implemented features
++ `If` `else if` `else` `while` `do..while` `for` statements by indentation  
++ Class and function definitions by indentation  
++ Statement conditions are no longer required to be bracketed  
+    + example:` if num_a==2: do stuff` vs `if(num_a==2){do stuff}`  
++ Range based `for` loops are assumed to have an auto variable as condition  
++ Dynamic typing, modeled after `std::any`, can implicitly cast to any primitive value  
+    + example: `@ my_var; my_var=2; my_var+=3.5; my_var="hello"`;   
++ Initialize vectors/deque with simplified syntax  
+    + example: `typename var[100?]` vs `vector<typename> var(100)`;  
+    + If no number is given, a deque is created instead. Deques have better performance if memory is not reserved beforehand. 
++ Auto-generated header files with lzz. Just write the source file and a .h file is generated as part of the build pipeline. 
+##Features under development
++ Postfix `if`. This will be converted into c++ ternary statements.
+    +  example: `my_num=2 if x==3, 3 if x==5, 8 if c==9`
++ Recursive build tree to replace make or cmake by parsing includes
++ STL container slicing
+##Features being considered
++  None
+##Features discarded
++   Single if line statements
+    +   current syntax is sufficient
++   Implicit multithreading
+    +   too hardware-dependant to implement
++   List comprehensions
+    +   range based `for` loops are sufficient and more readable
++   `when` statement
+    +   c++ threads cannot be destroyed, and thus the statement  
+    cannot go out of scope properly
++   Chain comparisons
+    +   the transpiler is contextless, and cannot parse `<` and `>`  
+    due to usage in c++ templates

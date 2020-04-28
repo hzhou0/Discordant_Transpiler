@@ -3,6 +3,7 @@
     <words>
       <w>decl</w>
       <w>decls</w>
+      <w>preproc</w>
       <w>pythonic</w>
       <w>readline</w>
       <w>unindents</w>

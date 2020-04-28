@@ -52,20 +52,20 @@ class File:
         self.address = address
         self.file = open(address, "r")
         self.string = self.file.read()
+        self.file.close()
         self.replaced_pre = []
+        self.includes = [None]
         self.replaced_literals = []
         self.replaced_statements = []
         self.processed = False
 
-    def sync(self):
+    def sync(self, address):
         """
         synchronize self.string with file on disk
         """
-        self.file.close()
-        self.file = open(self.address, "w")
+        self.file = open(address, "w")
         self.file.write(self.string)
         self.file.close()
-        self.file = open(self.address, "r")
 
     def sanitize(self):
         """
@@ -118,6 +118,24 @@ class File:
         replace tokenized string literals, comments
         and preprocessors
         """
+        self.includes = []
+        for preproc in self.replaced_pre:
+            if re.search(r"#\s*include", preproc) and not re.search(r"<\w+>", preproc):
+                x = re.sub(r"#\s*include", "", preproc)
+                x = re.sub(r"\n", "", x)
+                x = x.strip()
+                if x[0] == x[-1] == "\"":
+                    x = x[1:-1]
+                else:
+                    raise ValueError(
+                        "Unknown include syntax for\n" + preproc + "Includes should be enclosed in brackets")
+                self.includes.append(x)
+        for i, s in enumerate(self.replaced_pre):
+            if re.search(r"#\s*include", s):
+                if s.strip()[-5:] == ".dis\"":
+                    self.replaced_pre[i] = s.strip()[:-5] + ".h\"\n"
+                self.replaced_pre[i] = "#hdr\n" + self.replaced_pre[i] + "#end\n"
+
         token = "!!!"
         for i in range(len(self.replaced_pre)):
             self.string = self.string.replace(str(i) + token + str(i) + "\n", self.replaced_pre[i], 1)
@@ -202,9 +220,9 @@ class File:
         # swap statements for marks
         self.mark_statements()
         expBox_list = self.cat_by_indent(r"\d@~@\d\n")
-        file = open("marked.txt", "w")
-        file.write(self.string)
-        file.close()
+        #file = open("marked.txt", "w")
+        #file.write(self.string)
+        #file.close()
         # iterate through all matches, deepest indented ones first
         for expBox in expBox_list:
             for expr in expBox.expr_list:
@@ -266,14 +284,14 @@ class File:
         self.replace_statements()
 
     def dynamic_type(self):
-        self.string = self.string.replace("@ ", "discordance::var ")
+        self.string = self.string.replace("@", "discordance::var ")
 
     def vector(self):
         # default initialization
         vector_decls = re.findall(r"(?:[\w:.]+\s+)*[^\w;]*[\w]+(?:\[[ ?\d]*\? *\])+\s*;", self.string)
         # decl = *type* var [?]
         for decl in vector_decls:
-            decl=decl[:-1].strip()
+            decl = decl[:-1].strip()
             # isolate var[?]
             index_operators = re.findall(r"(?:\[[ ?\d]*\? *\])", decl)
             typename = ""
@@ -306,7 +324,7 @@ class File:
         # assignment initialization
         vector_decls = re.findall(r"(?:[\w:.]+\s+)*[^\w;]*[\w]+(?:\[[ ?\d]*\? *\])+\s*[={]", self.string)
         for decl in vector_decls:
-            decl=decl[:-1].strip()
+            decl = decl[:-1].strip()
             # isolate var[?]
             index_operators = re.findall(r"(?:\[[ ?\d]*\? *\])", decl)
             typename = ""
@@ -333,23 +351,44 @@ class File:
             payload = typename + " " + var
             self.string = self.string.replace(target, payload)
 
+    def slice(self):
+        slice_decls = re.finditer(r"\[([ \d]*)\:([ \d]*)\]", self.string)
+        for decl in slice_decls:
+            target = decl.group()
+            begin = 0
+            if decl.group(1).strip():
+                begin = decl.group(1).strip()
+            end = 0
+            if decl.group(2).strip():
+                end = decl.group(2).strip()
+            payload = ".slice(" + begin + "," + end + ")"
+            self.string = self.string.replace(target, payload)
+
+    def link_c_lib(self):
+
+        self.string = self.string.replace("std::deque", "discordance::deque")
+        self.string = self.string.replace("std::vector", "discordance::vector")
+        self.string = "#hdr\n" \
+                      "#include \"Discordance.h\"\n" \
+                      "using namespace discordance;\n" \
+                      "using discordance::deque; using discordance::vector; using discordance::var;\n" \
+                      "#end\n" \
+                      "#src\n" \
+                      "#include \"Discordance.h\"\n" \
+                      "using namespace discordance;\n" \
+                      "using discordance::deque; using discordance::vector; using discordance::var;\n" \
+                      "#end\n" + self.string
+
     def process(self):
         self.sanitize()
         self.mark_com()
-        self.statements()
-        self.replace_com()
         self.dynamic_type()
+        self.statements()
         self.vector()
+        self.slice()
+        self.replace_com()
+        self.link_c_lib()
         self.processed = True
-
-    def includes(self):
-        if not self.processed:
-            raise ValueError("Not yet processed!")
-        includes = []
-        for preproc in self.replaced_pre:
-            if re.search(r"#\s*include", preproc) and not re.search(r"<\w+>", preproc):
-                includes.append(preproc)
-        return includes
 
     # lines = []
     # for i in range(line_count):
