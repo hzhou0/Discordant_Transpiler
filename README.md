@@ -1,7 +1,7 @@
 # Discordant Transpiler
 The transpiler for **Discordant**, a language that compiles to C++, written in Python. 
 ## Installation Instructions
-###Perquisites
+### Perquisites
 +  Windows 10
     +   Unix and Linux support planned
 + Python 3.5-3.7  
@@ -9,13 +9,13 @@ The transpiler for **Discordant**, a language that compiles to C++, written in P
 + g++, part of the gcc toolchain  
     +  Install with http://mingw.org/ for windows  
         `g++ --version`
-###Install
+### Install
    `git clone https://github.com/NeverLucky123/Discordant_Transpiler.git` 
     
    `cd .../Discordant_Transpiler`
    
    `Transpiler.py run test_proj/discordance.dis`
-###How to Use
+### How to Use
     Transpiler [run/make/transpiler] [PATH TO FILE] -I[directories to search in for includes]
 ##Implemented features
 + `If` `else if` `else` `while` `do..while` `for` statements by indentation  
