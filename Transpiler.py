@@ -71,7 +71,6 @@ parser.add_argument("infile")
 parser.add_argument('outfile', nargs='?')
 # args = parser.parse_args(["run", "test_proj/discordance.dis", "-i", "asd"])
 args = parser.parse_args()
-print(os.path.abspath(args.infile))
 a = project(os.path.abspath(args.infile), args.i, args.outfile)
 
 a.transpile()
