@@ -17,7 +17,7 @@ The transpiler for **Discordant**, a language that compiles to C++, written in P
    `Transpiler.py run test_proj/discordance.dis`
 ### How to Use
     Transpiler [run/make/transpiler] [PATH TO FILE] -I[directories to search in for includes]
-##Implemented features
+## Implemented features
 + `If` `else if` `else` `while` `do..while` `for` statements by indentation  
 + Class and function definitions by indentation  
 + Statement conditions are no longer required to be bracketed  
@@ -29,14 +29,14 @@ The transpiler for **Discordant**, a language that compiles to C++, written in P
     + example: `typename var[100?]` vs `vector<typename> var(100)`;  
     + If no number is given, a deque is created instead. Deques have better performance if memory is not reserved beforehand. 
 + Auto-generated header files with lzz. Just write the source file and a .h file is generated as part of the build pipeline. 
-##Features under development
+## Features under development
 + Postfix `if`. This will be converted into c++ ternary statements.
     +  example: `my_num=2 if x==3, 3 if x==5, 8 if c==9`
 + Recursive build tree to replace make or cmake by parsing includes
 + STL container slicing
-##Features being considered
+## Features being considered
 +  None
-##Features discarded
+## Features discarded
 +   Single if line statements
     +   current syntax is sufficient
 +   Implicit multithreading
