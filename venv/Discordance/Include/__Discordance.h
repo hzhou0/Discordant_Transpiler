@@ -71,7 +71,7 @@ namespace discordance{
             }
             return x;
         }
-        discordance::vector<t> slice(int first, int last){
+        discordance::deque<t> slice(int first, int last){
             if(last<0){
                 last=this->size()+last;
             }
@@ -3149,5 +3149,88 @@ namespace discordance {
         friend t operator/(const var&a, t b){
             return t(a)/b;
         }
+        template<typename t>
+        friend t operator%(t a, const var& b){
+            return a%t(b);
+        }
+        template<typename t>
+        friend t operator%(const var&a, t b){
+            return t(a)%b;
+        }
+        template<typename t>
+        friend t operator<(t a, const var& b){
+            return a<t(b);
+        }
+        template<typename t>
+        friend t operator<(const var&a, t b){
+            return t(a)<b;
+        }
+        template<typename t>
+        friend t operator>(t a, const var& b){
+            return a>t(b);
+        }
+        template<typename t>
+        friend t operator>(const var&a, t b){
+            return t(a)>b;
+        }
+        template<typename t>
+        friend t operator<=(t a, const var& b){
+            return a<=t(b);
+        }
+        template<typename t>
+        friend t operator<=(const var&a, t b){
+            return t(a)<=b;
+        }
+        template<typename t>
+        friend t operator>=(t a, const var& b){
+            return a>=t(b);
+        }
+        template<typename t>
+        friend t operator>=(const var&a, t b){
+            return t(a)>=b;
+        }
+        template<typename t>
+        friend t operator==(t a, const var& b){
+            return a==t(b);
+        }
+        template<typename t>
+        friend t operator==(const var&a, t b){
+            return t(a)==b;
+        }
+        template<typename t>
+        friend t operator&&(t a, const var& b){
+            return a&&t(b);
+        }
+        template<typename t>
+        friend t operator&&(const var&a, t b){
+            return t(a)&&b;
+        }
+        template<typename t>
+        friend t operator||(t a, const var& b){
+            return a||t(b);
+        }
+        template<typename t>
+        friend t operator||(const var&a, t b){
+            return t(a)||b;
+        }
+        friend var operator-(const var&a){
+            switch (a.Type) {
+                default:
+                    throw std::bad_cast();
+                case Bool:
+                    return -*reinterpret_cast<bool *>(a.val);
+                case Integer:
+                    return -*reinterpret_cast<int *>(a.val);
+                case Long:
+                    return -*reinterpret_cast<long *>(a.val);
+                case LL:
+                    return -*reinterpret_cast<long long *>(a.val);
+                case Double:
+                    return -*reinterpret_cast<double *>(a.val);
+                case LD:
+                    return -*reinterpret_cast<long double *>(a.val);
+            }
+        }
     };
 }
+

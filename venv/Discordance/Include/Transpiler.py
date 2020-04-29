@@ -4,24 +4,18 @@ import os
 import subprocess
 import argparse
 
-
-# x = File(os.getcwd() + "/sample_discord.dis")
-# x.process()
-
-
-# print(x.includes)
-# print(x.string)
+#x = File("test_proj/discordance.dis")
+#.process()
+#print(x.string)
 
 
 class project:
-
     def __init__(self, root_file_address, include_dir=None, output_exe=None):
         self.root = root_file_address
         if not output_exe:
             output_exe = os.path.splitext(root_file_address)[0] + ".exe"
         self.output_exe = output_exe
-        if not include_dir:
-            include_dir = [os.path.dirname(self.root)]
+        include_dir.append(os.path.dirname(self.root))
         include_dir.append(os.path.abspath(os.path.dirname(__file__)))
         self.include_dirs = include_dir
         self.files = []
@@ -34,8 +28,8 @@ class project:
     def transpile(self, address=None):
         if not address:
             address = self.root
-        if os.path.isfile(os.path.splitext(address)[0]+".h"):
-            os.remove(os.path.splitext(address)[0]+".h")
+        if os.path.isfile(os.path.splitext(address)[0] + ".h"):
+            os.remove(os.path.splitext(address)[0] + ".h")
         if os.path.isfile(os.path.splitext(address)[0] + ".cpp"):
             os.remove(os.path.splitext(address)[0] + ".cpp")
         file = File(address)
@@ -50,8 +44,9 @@ class project:
             self.files.append(os.path.splitext(address)[0] + ".cpp")
         else:
             self.files.append(address)
-        for include in file.includes:
-            self.compile(find(include))
+        if file.includes:
+            for include in file.includes:
+                self.transpile(self.find(include))
 
     def build(self):
         if os.path.isfile(self.output_exe):
@@ -59,9 +54,8 @@ class project:
         gcc_I = []
         for dir in self.include_dirs:
             gcc_I.append("-I " + dir + " ")
-        subprocess.call(["g++", self.files,
-                         "-o", self.output_exe,
-                        gcc_I], shell=True)
+        gcc_files = " " + " ".join(self.files)
+        os.system("g++" + " " + gcc_files + " -o " + self.output_exe + " " + "".join(gcc_I))
 
     def run(self):
         subprocess.call([self.output_exe])
@@ -72,7 +66,7 @@ parser.add_argument("-i", "-include", nargs="*")
 parser.add_argument("action", choices=['transpile', 'make', 'run'])
 parser.add_argument("infile")
 parser.add_argument('outfile', nargs='?')
-#args = parser.parse_args(["make", "test_proj/sample_discord.dis", "-i", "asd"])
+#args = parser.parse_args(["run", "test_proj/discordance.dis", "-i", "asd"])
 args = parser.parse_args()
 a = project(os.path.abspath(args.infile), args.i, args.outfile)
 

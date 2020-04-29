@@ -57,6 +57,7 @@ class File:
         self.includes = [None]
         self.replaced_literals = []
         self.replaced_statements = []
+        self.class_decl = []
         self.processed = False
 
     def sync(self, address):
@@ -148,19 +149,21 @@ class File:
         replaces preprocessor commands, string literals, and comments
         with tokens to later replace
         """
-        regex = r"((?:if|for|while|do|else\s+?if)[\s(]+?[\s\S]*?:\n)" \
+        regex = r"((?:if|for|class|while|do|else\s+?if)[\s(]+?[\s\S]*?:\n)" \
                 r"|(else\s*?:\n)" \
-                r"|\b[\w]+[^\w;]+[\w]+\s*\([^;]*?\)\s*:\n"
+                r"|\b[\w]*[^\w;]*[\w]+\s*\([^;]*?\)\s*:\n"
         token = "@~@"
         i = 0
         matches = re.finditer(regex, self.string)
         self.replaced_statements = []
         for match in matches:
             if match:
-                regex = r"\b(?:else\s+?if|if|for|while|else|switch|case)\b" \
-                        r"|\b[\w]+[^\w;]+[\w]+\s*\([^;]*?\)\s*:\n"
+                regex = r"\b(?:else\s+?if|if|for|class|while|else|switch|case)\b" \
+                        r"|\b[\w]*[^\w;]*[\w]+\s*\([^;]*?\)\s*:\n"
                 if len(re.findall(regex, match.group())) < 2:
                     self.replaced_statements.append(match.group())
+                    if re.search("class", match.group()):
+                        self.class_decl.append(len(self.replaced_statements) - 1)
         for match in self.replaced_statements:
             #   self.string=re.sub(match, str(i) + token + str(i), self.string, 1)
             self.string = self.string.replace(str(match), str(i) + token + str(i) + "\n", 1)
@@ -220,9 +223,9 @@ class File:
         # swap statements for marks
         self.mark_statements()
         expBox_list = self.cat_by_indent(r"\d@~@\d\n")
-        #file = open("marked.txt", "w")
-        #file.write(self.string)
-        #file.close()
+        file = open("marked.txt", "w")
+        file.write(self.string)
+        file.close()
         # iterate through all matches, deepest indented ones first
         for expBox in expBox_list:
             for expr in expBox.expr_list:
@@ -249,7 +252,11 @@ class File:
                     spacing += " "
                 if lines[-1] == "\n":
                     lines = lines[:-1]
-                payload = exp.group()[:-1] + "{\n" + lines + "\n" + spacing + "}\n"
+                num = int(re.match(r"\d*", exp.group()).group())
+                if num in self.class_decl:
+                    payload = exp.group()[:-1] + "{\n" + lines + "\n" + spacing + "};\n"
+                else:
+                    payload = exp.group()[:-1] + "{\n" + lines + "\n" + spacing + "}\n"
                 # replace
                 self.string = self.string.replace(target, payload)
         # iterate through
@@ -352,7 +359,7 @@ class File:
             self.string = self.string.replace(target, payload)
 
     def slice(self):
-        slice_decls = re.finditer(r"\[([ \d]*)\:([ \d]*)\]", self.string)
+        slice_decls = re.finditer(r"\[([ \-\d]*)\:([ \-\d]*)\]", self.string)
         for decl in slice_decls:
             target = decl.group()
             begin = 0
@@ -361,7 +368,7 @@ class File:
             end = 0
             if decl.group(2).strip():
                 end = decl.group(2).strip()
-            payload = ".slice(" + begin + "," + end + ")"
+            payload = ".slice(" + str(begin) + "," + str(end) + ")"
             self.string = self.string.replace(target, payload)
 
     def link_c_lib(self):
@@ -369,12 +376,12 @@ class File:
         self.string = self.string.replace("std::deque", "discordance::deque")
         self.string = self.string.replace("std::vector", "discordance::vector")
         self.string = "#hdr\n" \
-                      "#include \"Discordance.h\"\n" \
+                      "#include \"__Discordance.h\"\n" \
                       "using namespace discordance;\n" \
                       "using discordance::deque; using discordance::vector; using discordance::var;\n" \
                       "#end\n" \
                       "#src\n" \
-                      "#include \"Discordance.h\"\n" \
+                      "#include \"__Discordance.h\"\n" \
                       "using namespace discordance;\n" \
                       "using discordance::deque; using discordance::vector; using discordance::var;\n" \
                       "#end\n" + self.string

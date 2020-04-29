@@ -1,0 +1,50 @@
+#include <iostream>
+using namespace std;
+//dynamic function
+@ return_any(@ any):
+  return any;
+
+//Functions can be declared with python syntax
+int main():
+
+    //as can classes
+    class apple:
+
+        string color="green";
+        //variables declared as type @ can take on any primitive value, including std::string
+        @ weight="2kg";
+
+        apple():
+            weight=2;
+            weight=2.0+weight;
+            //use if just like a normal variable
+            cout<<weight;
+
+    //easy declaration of vectors
+    int numbers[10?][?]={     //[num?] will declare a vector, [?] a deque
+    {1,2,3,4,5,6,7,8,9,10},
+    {-1,-2,-3,-4,-5,-6,-7,-8,-9,-10}
+    };
+
+    //python-style for statements
+    for row in numbers:
+        for column in row:
+            cout<<column<<endl;
+
+    //arrays of unlike things
+    @ bucket[?]={2.0, "chocolate milk", "15789"};
+    for item in bucket:
+        cout<<item<<endl;
+
+    //array slicing
+    auto small_bucket=bucket[1:2];
+    for item in small_bucket:
+        cout<<item<<endl;
+
+    //dynamic functions
+    cout<<return_any(2.0)<<endl;
+    cout<<return_any(5)<<endl;
+    cout<<return_any("hello")<<endl;
+
+
+    return 0;
