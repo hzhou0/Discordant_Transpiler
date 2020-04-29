@@ -4,9 +4,10 @@ import os
 import subprocess
 import argparse
 
-#x = File("test_proj/discordance.dis")
-#.process()
-#print(x.string)
+
+# x = File("test_proj/discordance.dis")
+# .process()
+# print(x.string)
 
 
 class project:
@@ -15,6 +16,8 @@ class project:
         if not output_exe:
             output_exe = os.path.splitext(root_file_address)[0] + ".exe"
         self.output_exe = output_exe
+        if not include_dir:
+            include_dir = []
         include_dir.append(os.path.dirname(self.root))
         include_dir.append(os.path.abspath(os.path.dirname(__file__)))
         self.include_dirs = include_dir
@@ -66,8 +69,9 @@ parser.add_argument("-i", "-include", nargs="*")
 parser.add_argument("action", choices=['transpile', 'make', 'run'])
 parser.add_argument("infile")
 parser.add_argument('outfile', nargs='?')
-#args = parser.parse_args(["run", "test_proj/discordance.dis", "-i", "asd"])
+# args = parser.parse_args(["run", "test_proj/discordance.dis", "-i", "asd"])
 args = parser.parse_args()
+print(os.path.abspath(args.infile))
 a = project(os.path.abspath(args.infile), args.i, args.outfile)
 
 a.transpile()
