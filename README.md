@@ -5,7 +5,8 @@ The transpiler for **Discordant**, a language that compiles to C++, written in P
 +  Windows 10
     +   Unix and Linux support planned
 + Python 3.5-3.7  
- `py --version`
+  `py --version`
+    +  Testing executable _Transpiler.exe_ that no longer requires python
 + g++, part of the gcc toolchain  
     +  Install with http://mingw.org/ for windows  
         `g++ --version`
@@ -14,7 +15,12 @@ The transpiler for **Discordant**, a language that compiles to C++, written in P
     
    `cd .../Discordant_Transpiler`
    
-   `Transpiler.py run test_proj/discordance.dis`
+   `Transpiler.py run test_proj/discordance.dis`  
+   +  If you don't have python installed
+    
+ `Transpiler run test_proj/discordance.dis`  
+
+   
 ### How to Use
     Transpiler [run/make/transpiler] [PATH TO FILE] -I[directories to search in for includes]
 ## Implemented features
