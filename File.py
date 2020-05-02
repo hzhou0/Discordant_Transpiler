@@ -223,9 +223,9 @@ class File:
         # swap statements for marks
         self.mark_statements()
         expBox_list = self.cat_by_indent(r"\d@~@\d\n")
-        file = open("marked.txt", "w")
-        file.write(self.string)
-        file.close()
+        #file = open("marked.txt", "w")
+        #file.write(self.string)
+        #file.close()
         # iterate through all matches, deepest indented ones first
         for expBox in expBox_list:
             for expr in expBox.expr_list:

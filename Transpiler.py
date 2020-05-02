@@ -3,12 +3,20 @@ from File import *
 import os
 import subprocess
 import argparse
+import sys
 
 
 # x = File("test_proj/discordance.dis")
 # .process()
 # print(x.string)
-
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 class project:
     def __init__(self, root_file_address, include_dir=None, output_exe=None):
@@ -19,7 +27,7 @@ class project:
         if not include_dir:
             include_dir = []
         include_dir.append(os.path.dirname(self.root))
-        include_dir.append(os.path.abspath(os.path.dirname(__file__)))
+        include_dir.append(resource_path(""))
         self.include_dirs = include_dir
         self.files = []
 
@@ -40,7 +48,7 @@ class project:
         # if compiling a .dis file
         if address.split(".")[-1] == "dis":
             file.sync(address + "_")
-            subprocess.call([os.path.join(os.path.abspath(os.path.dirname(__file__)), "lazycpp.exe"),
+            subprocess.call([resource_path("lazycpp.exe"),
                              "-o", os.path.dirname(address),
                              os.path.normpath(address + "_")], shell=True)
             os.remove(address + "_")
@@ -79,3 +87,9 @@ if args.action == "make":
 elif args.action == "run":
     a.build()
     a.run()
+
+# __________________________________________
+# Build
+# With
+# pyinstaller -y  --onefile --icon=app.ico --add-data lazycpp.exe;. --add-data __Discordance.h;. Transpiler.py --clean
+# __________________________________________
