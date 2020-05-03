@@ -1,0 +1,11 @@
+
+*.toc
+__pycache__/Transpiler.cpython-35.pyc
+build/Transpiler/base_library.zip
+build/Transpiler/PKG-00.pkg
+build/Transpiler/PYZ-00.pyz
+build/Transpiler/Transpiler.exe.manifest
+build/Transpiler/warn-Transpiler.txt
+build/Transpiler/xref-Transpiler.html
+__pycache__/Transpiler.cpython-35.pyc
+__pycache__/Transpiler.cpython-35.pyc
