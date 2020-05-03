@@ -4,7 +4,7 @@ import os
 import subprocess
 import argparse
 import sys
-
+import platform
 
 # x = File("test_proj/discordance.dis")
 # .process()
@@ -48,7 +48,15 @@ class project:
         # if compiling a .dis file
         if address.split(".")[-1] == "dis":
             file.sync(address + "_")
-            subprocess.call([resource_path("lazycpp.exe"),
+            if platform.system()=='Windows':
+                lazycpp="lazycpp.exe"
+            elif platform.system()=='Darwin':
+                lazycpp="mac_lazycpp"
+            elif platform.system()=='Linux':
+                lazycpp="linux_lazycpp"
+            else:
+                raise ValueError("Unsupported Operating System")
+            subprocess.call([resource_path(lazycpp),
                              "-o", os.path.dirname(address),
                              os.path.normpath(address + "_")], shell=True)
             os.remove(address + "_")
