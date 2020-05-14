@@ -42,6 +42,7 @@ int main ()
     cout<<return_any(2.0)<<endl;
     cout<<return_any(5)<<endl;
     cout<<return_any("hello")<<endl;
+    a2();
     return 0;
 }
 #undef LZZ_INLINE

@@ -50,7 +50,7 @@ class File:
 
     def __init__(self, address):
         self.address = address
-        self.file = open(address, "r")
+        self.file = open(address)
         self.string = self.file.read()
         self.file.close()
         self.replaced_pre = []
@@ -60,6 +60,18 @@ class File:
         self.class_decl = []
         self.processed = False
 
+    def clear(self):
+        """
+        Clear all except for includes, address and processed
+        to free up memory
+        """
+        self.file = None
+        self.string = None
+        self.replaced_pre = None
+        self.replaced_literals = None
+        self.replaced_statements = None
+        self.class_decl = None
+
     def sync(self, address):
         """
         synchronize self.string with file on disk
@@ -67,6 +79,7 @@ class File:
         self.file = open(address, "w")
         self.file.write(self.string)
         self.file.close()
+        self.clear()
 
     def sanitize(self):
         """
