@@ -10,7 +10,6 @@ int main():
 
     //as can classes
     class apple:
-
         string color="green";
         //variables declared as type @ can take on any primitive value, including std::string
         @ weight="2kg";

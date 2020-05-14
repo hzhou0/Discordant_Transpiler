@@ -7,6 +7,7 @@ import sys
 import platform
 import pickle
 import time
+import filecmp
 
 
 # x = File("test_proj/discordance.dis")
@@ -31,8 +32,6 @@ def src_changed(path):
     """
     try:
         src_mtime = os.path.getmtime(path)
-        if os.path.exists(os.path.splitext(path)[0] + ".dis"):
-            src_mtime = os.path.getmtime(os.path.splitext(path)[0] + ".dis")
         obj_mtime = os.path.getmtime(
             os.path.join(
                 os.path.split(path)[0],
@@ -85,6 +84,10 @@ class project:
         raise ValueError("file \"" + name + "\" could not be found")
 
     def update_register(self):
+        """
+        Add the current output_exe to the project register
+        and update its timestamp
+        """
         register_path = resource_path("register")
         if os.path.exists(register_path):
             project_register = open(register_path, 'rb')
@@ -126,8 +129,6 @@ class project:
         changed = []
         for hd in self.hds_path:
             hd_mtime = os.path.getmtime(hd)
-            if os.path.exists(os.path.splitext(hd)[0] + ".dis"):
-                hd_mtime = os.path.getmtime(os.path.splitext(hd)[0] + ".dis")
             if hd_mtime > mtime:
                 changed.append(hd)
         # if any headers includes changed headers, they are also changed
@@ -173,13 +174,17 @@ class project:
             return
         file = File(address)
         file.process()
+        striped = os.path.splitext(address)[0]
         # if compiling a .dis file
         if address.split(".")[-1] == "dis":
-            # clean previous .h files
-            if os.path.isfile(os.path.splitext(address)[0] + ".h"):
-                os.remove(os.path.splitext(address)[0] + ".h")
-            if os.path.isfile(os.path.splitext(address)[0] + ".cpp"):
-                os.remove(os.path.splitext(address)[0] + ".cpp")
+            # rename previous compiles
+            hd_mtime = src_mtime = None
+            if os.path.isfile(striped + ".h"):
+                hd_mtime = os.path.getmtime(striped + ".h")
+                os.rename(striped + ".h", striped + ".h_")
+            if os.path.isfile(striped + ".cpp"):
+                src_mtime = os.path.getmtime(striped + ".cpp")
+                os.rename(striped + ".cpp", striped + ".cpp_")
             # push processed file onto disk
             file.sync(address + "_")
             # split processed file into source and header
@@ -196,20 +201,28 @@ class project:
                              os.path.normpath(address + "_")], shell=True)
             # remove temp processed file
             os.remove(address + "_")
+            # compare new files to previous ones if they exist
+            if hd_mtime and src_mtime:
+                if filecmp.cmp(striped + ".h_", striped + ".h", shallow=False):
+                    os.utime(striped + ".h", (hd_mtime, hd_mtime))
+                if filecmp.cmp(striped + ".cpp_", striped + ".cpp", shallow=False):
+                    os.utime(striped + ".cpp", (src_mtime, src_mtime))
+                os.remove(striped + ".h_")
+                os.remove(striped + ".cpp_")
             # change address of .dis file to .cpp to feed to gcc
-            self.srcs_path.append(os.path.splitext(address)[0] + ".cpp")
-            self.hds_path.append(os.path.splitext(address)[0] + ".h")
+            self.srcs_path.append(striped + ".cpp")
+            self.hds_path.append(striped + ".h")
         elif address.split(".")[-1] == "h":
             self.hds_path.append(address)
             try:
                 # append src file associated with header
-                if self.find(os.path.splitext(address)[0] + ".cpp"):
-                    assoc_src = self.find(os.path.splitext(address)[0] + ".cpp")
+                if self.find(striped + ".cpp"):
+                    assoc_src = self.find(striped + ".cpp")
                     if assoc_src not in self.srcs_path:
                         self.transpile(assoc_src)
                         self.srcs_path.append(assoc_src)
-                elif self.find(os.path.splitext(address)[0] + ".cxx"):
-                    assoc_src = self.find(os.path.splitext(address)[0] + ".cxx")
+                elif self.find(striped + ".cxx"):
+                    assoc_src = self.find(striped + ".cxx")
                     if assoc_src not in self.srcs_path:
                         self.transpile(assoc_src)
                         self.srcs_path.append(assoc_src)
@@ -238,16 +251,22 @@ class project:
             obj_dir = os.path.join(os.path.split(i)[0], ".obj")
             if not os.path.exists(obj_dir):
                 os.makedirs(obj_dir)
+            # clean last .obj file
+            last_obj = os.path.join(obj_dir,
+                                    os.path.splitext(os.path.split(i)[1])[0] + ".o")
+            if os.path.isfile(last_obj):
+                os.remove(last_obj)
             os.system("g++ " + " -c " + " -o " +
-                      os.path.join(
-                          obj_dir,
-                          os.path.splitext(os.path.split(i)[1])[0] + ".o")
+                      last_obj
                       + " " + os.path.normpath("-I " + " -I ".join(self.include_dirs)) + " " + i)
         # object files to executable
         gcc_files = []
+        print(self.srcs_path)
+        print(self.output_exe)
         for i in self.srcs_path:
             gcc_files.append(os.path.join(os.path.split(i)[0],
                                           ".obj", os.path.splitext(os.path.split(i)[1])[0] + ".o"))
+        print(" ".join(gcc_files))
         os.system("g++ " + " -o " + self.output_exe + " " + " ".join(gcc_files))
         if os.path.isfile(self.output_exe):
             self.update_register()
@@ -264,7 +283,7 @@ parser.add_argument("-i", "-include", nargs="*")
 parser.add_argument("action", choices=['transpile', 'make', 'run'])
 parser.add_argument("infile")
 parser.add_argument('outfile', nargs='?')
-args = parser.parse_args(["run", "test_proj/discordance.dis"])
+args = parser.parse_args(["make", "test_proj/discordance.dis"])
 # args = parser.parse_args()
 a = project(os.path.abspath(args.infile), args.i, args.outfile)
 
