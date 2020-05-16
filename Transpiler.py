@@ -246,7 +246,6 @@ class project:
             os.remove(self.output_exe)
         # source files to object files
         self.find_compile_files()
-        print(self.compiles_path)
         for i in self.compiles_path:
             obj_dir = os.path.join(os.path.split(i)[0], ".obj")
             if not os.path.exists(obj_dir):
@@ -261,12 +260,9 @@ class project:
                       + " " + os.path.normpath("-I " + " -I ".join(self.include_dirs)) + " " + i)
         # object files to executable
         gcc_files = []
-        print(self.srcs_path)
-        print(self.output_exe)
         for i in self.srcs_path:
             gcc_files.append(os.path.join(os.path.split(i)[0],
                                           ".obj", os.path.splitext(os.path.split(i)[1])[0] + ".o"))
-        print(" ".join(gcc_files))
         os.system("g++ " + " -o " + self.output_exe + " " + " ".join(gcc_files))
         if os.path.isfile(self.output_exe):
             self.update_register()
@@ -278,21 +274,22 @@ class project:
         subprocess.call([self.output_exe])
 
 
-parser = argparse.ArgumentParser(description='Transpile, Compile, or Run Discordant Source Code')
-parser.add_argument("-i", "-include", nargs="*")
-parser.add_argument("action", choices=['transpile', 'make', 'run'])
-parser.add_argument("infile")
-parser.add_argument('outfile', nargs='?')
-args = parser.parse_args(["make", "test_proj/discordance.dis"])
-# args = parser.parse_args()
-a = project(os.path.abspath(args.infile), args.i, args.outfile)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Transpile, Compile, or Run Discordant Source Code')
+    parser.add_argument("-i", "-include", nargs="*")
+    parser.add_argument("action", choices=['transpile', 'make', 'run'])
+    parser.add_argument("infile")
+    parser.add_argument("-o", "-outfile", nargs='?')
+    # args = parser.parse_args(["run", "test_proj/discordance.dis"])
+    args = parser.parse_args()
+    a = project(os.path.abspath(args.infile), args.i, args.o)
 
-a.transpile()
-if args.action == "make":
-    a.build()
-elif args.action == "run":
-    a.build()
-    a.run()
+    a.transpile()
+    if args.action == "make":
+        a.build()
+    elif args.action == "run":
+        a.build()
+        a.run()
 
 # __________________________________________
 # Build
