@@ -228,6 +228,10 @@ class project:
                         self.srcs_path.append(assoc_src)
             except ValueError:
                 pass
+        else:
+            # if root file not a .dis file
+            if address == self.root:
+                self.srcs_path.append(self.root)
         #  if includes other files
         if file.includes:
             # transpile each file included recursively
@@ -280,7 +284,7 @@ if __name__ == "__main__":
     parser.add_argument("action", choices=['transpile', 'make', 'run'])
     parser.add_argument("infile")
     parser.add_argument("-o", "-outfile", nargs='?')
-    # args = parser.parse_args(["run", "test_proj/discordance.dis"])
+    # args = parser.parse_args(["run", "C:\\Users\\henry\\Documents\\C++\\Untitled1.cpp"])
     args = parser.parse_args()
     a = project(os.path.abspath(args.infile), args.i, args.o)
 
