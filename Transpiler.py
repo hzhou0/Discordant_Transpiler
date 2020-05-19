@@ -18,9 +18,22 @@ def resource_path(relative_path):
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = sys._MEIPASS
+        # PyInstaller puts all executables in a single dir
+        # flatten paths
+        relative_path = os.path.split(relative_path)[1]
     except Exception:
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
+
+
+def data_path(relative_path):
+    "Get absoluate path to a data file in the correct cross-platform app folder"
+    from pathlib import Path
+    home = str(Path.home())
+    data_dir = os.path.join(home, ".discordance")
+    if not os.path.isdir(data_dir):
+        os.mkdir(data_dir)
+    return os.path.join(data_dir, relative_path)
 
 
 def src_changed(path):
@@ -88,8 +101,8 @@ class project:
         Add the current output_exe to the project register
         and update its timestamp
         """
-        register_path = resource_path("register")
-        if os.path.exists(register_path):
+        register_path = data_path("register")
+        if os.path.isfile(register_path):
             project_register = open(register_path, 'rb')
         else:
             temp = open(register_path, 'wb')
@@ -113,8 +126,8 @@ class project:
         Headers are counted as changed when they have been modified
         more recently then the last time the project was built
         """
-        register_path = resource_path("register")
-        if os.path.exists(register_path):
+        register_path = data_path("register")
+        if os.path.isfile(register_path):
             project_register = open(register_path, 'rb')
         else:
             temp = open(register_path, 'wb')
@@ -284,8 +297,8 @@ if __name__ == "__main__":
     parser.add_argument("action", choices=['transpile', 'make', 'run'])
     parser.add_argument("infile")
     parser.add_argument("-o", "-outfile", nargs='?')
-    # args = parser.parse_args(["run", "C:\\Users\\henry\\Documents\\C++\\Untitled1.cpp"])
-    args = parser.parse_args()
+    args = parser.parse_args(["run", "test_proj/discordance.dis"])
+    # args = parser.parse_args()
     a = project(os.path.abspath(args.infile), args.i, args.o)
 
     a.transpile()
@@ -298,5 +311,6 @@ if __name__ == "__main__":
 # __________________________________________
 # Build
 # With
-# pyinstaller -y  --onefile --icon=app.ico --add-data lazycpp.exe;. --add-data __Discordance.h;. Transpiler.py --clean
+# pyinstaller -y --onefile --icon=app.ico --add-data lazycpp;. --add-data __Discordance.h;. Transpiler.py --clean
+# PyInstaller -wF --icon=app.ico --add-data dist/Transpiler.exe;. --add-data app.ico;. --hidden-import tkinter Gui.py --clean
 # __________________________________________

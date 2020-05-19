@@ -1,19 +1,42 @@
 import pickle
-
+import os
 import PySimpleGUI as sg
-from Transpiler import *
+import subprocess
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+        # pyinstaller puts all executables in a single dir
+        # flatten paths
+        relative_path = os.path.split(relative_path)[1]
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+
+def data_path(relative_path):
+    """Get absolute path to a data file in the correct cross-platform app folder"""
+    from pathlib import Path
+    home = str(Path.home())
+    data_dir = os.path.join(home, ".discordance")
+    if not os.path.isdir(data_dir):
+        os.mkdir(data_dir)
+    return os.path.join(data_dir, relative_path)
 
 
 class gui:
     def __init__(self):
-        if not os.path.isfile("gui_data"):
+        if not os.path.isfile(data_path("gui_data")):
             self.data = {'include_dirs': None, 'infile': None, 'outfile': None, 'mode': None}
             self.include_dirs = []
             self.infile = None
             self.outfile = None
             self.mode = None
         else:
-            data_file = open("gui_data", 'rb')
+            data_file = open(data_path("gui_data"), 'rb')
             self.data = pickle.load(data_file)
             data_file.close()
             self.include_dirs = self.data["include_dirs"]
@@ -34,7 +57,7 @@ class gui:
         if mode is not None:
             self.data["mode"] = mode
             self.mode = mode
-        data_file = open("gui_data", 'wb')
+        data_file = open(data_path("gui_data"), 'wb')
         pickle.dump(self.data, data_file)
         data_file.close()
 
@@ -71,13 +94,14 @@ while True:  # Event Loop
         if GUI.include_dirs:
             for i in GUI.include_dirs:
                 includes.append(i)
+        Listbox_size = 1 if not GUI.include_dirs else len(GUI.include_dirs) + 1
         include_layout = [[sg.Text("Transpiler will search in these directories for included header and source files",
                                    text_color="Purple")],
                           [sg.InputText(key='+', visible=False, enable_events=True),
                            sg.FolderBrowse('+', size=(3, 1), font=("", 12, ""), tooltip="Add directory"),
                            sg.Button('-', size=(3, 1), font=("", 12, ""), tooltip="Remove selected"),
                            sg.Text(key='status', size=(50, 1))],
-                          [sg.Listbox(includes, key='includes', size=(100, len(GUI.include_dirs)))]]
+                          [sg.Listbox(includes, key='includes', size=(100, Listbox_size))]]
         include_window = sg.Window('Includes', icon=resource_path("app.ico"), layout=include_layout, resizable=True)
         while True:
             event, values = include_window.read()
@@ -104,24 +128,51 @@ while True:  # Event Loop
                     else:
                         include_window['status'].update("Cannot remove directory of input file", text_color="Red")
                 Listbox.Update(Paths)
-                print(Paths[1:])
                 GUI.save_state(include_dirs=Paths[1:])
-
+    elif event == 'Cache':
+        cache = data_path("register")
+        if not os.path.isfile(cache):
+            temp = open(data_path("register"), 'wb')
+            pickle.dump({}, temp)
+            temp.close()
+        cache = os.path.getsize(cache) / (1024 * 1024)
+        # truncate to a 2 decimals to improve readability
+        cache = '%.2f' % cache
+        cache_layout = [[sg.Text("Cache is taking up " + cache + " MB", text_color='Purple', key='size')],
+                        [sg.Text("The cache stores the build timestamp of all executables.")],
+                        [sg.Text(
+                            "Clearing the cache would cause all files to be recompiled, increasing compile time.")],
+                        [sg.Button("Clear Cache"), sg.Text(key='status', size=(10, 1))]]
+        cache_window = sg.Window('Cache', icon=resource_path("app.ico"), layout=cache_layout, resizable=True)
+        while True:
+            event, values = cache_window.read()
+            if event in (None, 'Exit'):
+                break
+            elif event == 'Clear Cache':
+                if os.path.isfile(data_path("register")):
+                    os.remove(data_path("register"))
+                temp = open(data_path("register"), 'wb')
+                pickle.dump({}, temp)
+                temp.close()
+                cache_window['status'].update("Cleared", text_color="Purple")
+                cache = data_path("register")
+                cache = os.path.getsize(cache) / (1024 * 1024)
+                cache = '%.2f' % cache
+                cache_window['size'].update("Cache is taking up " + cache + " MB", text_color='Purple')
     elif event == 'go':
-        cmd = [resource_path("Transpiler.py"), GUI.mode, GUI.infile]
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True,
-                             text=True)
-        output, err = p.communicate()
-        p_status = p.wait()
-        if output:
-            print(output)
-        if err:
-            print(err)
-        if p_status == 0:
-            window['status'].update("Successful", text_color="Purple")
-        else:
-            window['status'].update("Failed", text_color="Red")
-
-        # print(subprocess.run([resource_path("Transpiler.py")], capture_output=True, text=True, shell=True).stdout)
+        try:
+            cmd = [resource_path("dist/Transpiler"), GUI.mode, GUI.infile]
+            p = subprocess.run(cmd, capture_output=True, text=True, stdin=subprocess.DEVNULL)
+            output, err = p.stdout, p.stderr
+            if output:
+                print(output)
+            if err:
+                print(err)
+            if p.returncode == 0:
+                window['status'].update("Successful", text_color="Purple")
+            else:
+                window['status'].update("Failed", text_color="Red")
+        except Exception as e:
+            print(e)
 
 window.close()
