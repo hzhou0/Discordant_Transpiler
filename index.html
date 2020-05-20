@@ -1,0 +1,611 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="shortcut icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.2.0">
+    
+    
+      
+        <title>Discordance</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.18ac144a.min.css">
+      
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#variables" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="." title="Discordance" class="md-header-nav__button md-logo" aria-label="Discordance">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Discordance
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Langauge Reference
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="Discordance" class="md-nav__button md-logo" aria-label="Discordance">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Discordance
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Langauge Reference
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="." title="Langauge Reference" class="md-nav__link md-nav__link--active">
+      Langauge Reference
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    @ Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-arrays" class="md-nav__link">
+    Dynamic Arrays
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#array-slicing" class="md-nav__link">
+    Array Slicing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#if-else-else-if-while-statements" class="md-nav__link">
+    If, Else, Else If, While Statements
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-loops-requires-c11" class="md-nav__link">
+    For loops (Requires C++11)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-and-function-declaration" class="md-nav__link">
+    Class and Function Declaration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-header-generation" class="md-nav__link">
+    Automatic Header Generation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c-compatibility" class="md-nav__link">
+    C++ Compatibility
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#include" class="md-nav__link">
+    #Include
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="https://github.com/NeverLucky123/Discordant_Transpiler/" title="Github" class="md-nav__link">
+      Github
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    @ Variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-arrays" class="md-nav__link">
+    Dynamic Arrays
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#array-slicing" class="md-nav__link">
+    Array Slicing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#if-else-else-if-while-statements" class="md-nav__link">
+    If, Else, Else If, While Statements
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#for-loops-requires-c11" class="md-nav__link">
+    For loops (Requires C++11)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#class-and-function-declaration" class="md-nav__link">
+    Class and Function Declaration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-header-generation" class="md-nav__link">
+    Automatic Header Generation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c-compatibility" class="md-nav__link">
+    C++ Compatibility
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#include" class="md-nav__link">
+    #Include
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                  <h1>Langauge Reference</h1>
+                
+                <p>This reference shows source Discordance above output C++. 
+Familiarity with C++ and its STL is assumed. </p>
+<h2 id="variables">@ Variables</h2>
+<p>Variables declared with the @ keyword can be assigned any single primitive value.
+This includes ints, floats, char[], and std::string and excludes pointers, references, or classes.</p>
+<div class="codehilite"><pre><span></span><code><span class="err">@</span> <span class="n">weight</span><span class="o">=</span><span class="s">&quot;2kg&quot;</span><span class="p">;</span>
+<span class="n">weight</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span>
+<span class="n">weight</span><span class="o">=</span><span class="mf">2.0</span><span class="o">+</span><span class="n">weight</span><span class="p">;</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">discordance</span><span class="o">::</span><span class="n">var</span> <span class="n">weight</span><span class="o">=</span><span class="s">&quot;2kg&quot;</span><span class="p">;</span>
+<span class="n">weight</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span>
+<span class="n">weight</span><span class="o">=</span><span class="mf">2.0</span><span class="o">+</span><span class="n">weight</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>Dynamic variables are implemented as a class in C++. This means they are around 60 times slower than their primitive counterpart,
+or about as fast as a python primitive, mostly due to constructor overhead. They also cannot be passed into templated or overloaded functions,
+as they cannot resolve their own type. </p>
+<h2 id="dynamic-arrays">Dynamic Arrays</h2>
+<p>Dynamic arrays are declared with [?] or [<strong>SOME_NUMBER</strong>?]. If a number is given, then a <code>vector</code> is created, otherwise a <code>deque</code> is created. 
+This is because if space in <code>vector</code> is not reserved, performance suffers immensely. </p>
+<div class="codehilite"><pre><span></span><code><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">desserts</span><span class="p">[</span><span class="o">?</span><span class="p">];</span>
+<span class="n">desserts</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;apple pie&quot;</span><span class="p">,</span> <span class="s">&quot;chocolate cake&quot;</span><span class="p">,</span> <span class="s">&quot;waffles&quot;</span><span class="p">,</span> <span class="s">&quot;cupcakes&quot;</span><span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">colors</span><span class="p">[</span><span class="mi">5</span><span class="o">?</span><span class="p">];</span>
+<span class="n">colors</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;green&quot;</span><span class="p">,</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> <span class="s">&quot;magenta&quot;</span><span class="p">,</span> <span class="s">&quot;teal&quot;</span><span class="p">,</span> <span class="s">&quot;crimson&quot;</span><span class="p">};</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">discordance</span><span class="o">::</span><span class="n">deque</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&gt;</span> <span class="n">desserts</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">desserts</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;apple pie&quot;</span><span class="p">,</span> <span class="s">&quot;chocolate cake&quot;</span><span class="p">,</span> <span class="s">&quot;waffles&quot;</span><span class="p">,</span> <span class="s">&quot;cupcakes&quot;</span><span class="p">};</span>
+<span class="n">discordance</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&gt;</span> <span class="n">colors</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="n">colors</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;green&quot;</span><span class="p">,</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> <span class="s">&quot;magenta&quot;</span><span class="p">,</span> <span class="s">&quot;teal&quot;</span><span class="p">,</span> <span class="s">&quot;crimson&quot;</span><span class="p">};</span>
+</code></pre></div>
+
+
+<p>Dynamic arrays compile into <code>discordance::deque</code> or <code>discordance::vector</code>, which behave in the same way as their <code>std</code> counterparts except 
+that they can be implicitly casted into <code>discordance::vector</code> of different types.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">colors</span><span class="o">=</span><span class="n">desserts</span><span class="p">;</span>
+<span class="kt">double</span> <span class="n">calorie_count</span><span class="p">[</span><span class="o">?</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">350.3</span><span class="p">,</span> <span class="mf">70.2</span><span class="p">,</span> <span class="mf">50.2</span><span class="p">};</span>
+<span class="kt">int</span> <span class="n">precise_count</span><span class="p">[</span><span class="o">?</span><span class="p">]</span><span class="o">=</span><span class="n">calorie_count</span><span class="p">;</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">colors</span><span class="o">=</span><span class="n">desserts</span><span class="p">;</span>
+<span class="n">discordance</span><span class="o">::</span><span class="n">deque</span><span class="o">&lt;</span><span class="kt">double</span> <span class="o">&gt;</span> <span class="n">calorie_count</span><span class="o">=</span><span class="p">{</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">350.3</span><span class="p">,</span> <span class="mf">70.2</span><span class="p">,</span> <span class="mf">50.2</span><span class="p">};</span>
+<span class="n">discordance</span><span class="o">::</span><span class="n">deque</span><span class="o">&lt;</span><span class="kt">int</span> <span class="o">&gt;</span> <span class="n">precise_count</span><span class="o">=</span><span class="n">calorie_count</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>Multidimensional dynamic arrays can be declared as below. As many dimensions as you want.</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span> <span class="n">numbers</span><span class="p">[</span><span class="mi">10</span><span class="o">?</span><span class="p">][</span><span class="o">?</span><span class="p">]</span><span class="o">=</span><span class="p">{</span>
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">},</span>
+    <span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="o">-</span><span class="mi">9</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">discordance</span><span class="o">::</span><span class="n">deque</span><span class="o">&lt;</span><span class="n">discordance</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span> <span class="o">&gt;&gt;</span> <span class="n">numbers</span><span class="o">=</span><span class="p">{</span>
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">},</span>
+    <span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="o">-</span><span class="mi">9</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div>
+
+
+<p>Dynamic arrays can be created with the @ keyword, which gives them the ability to hold unlike primitive values.</p>
+<div class="codehilite"><pre><span></span><code><span class="err">@</span> <span class="n">bucket</span><span class="p">[</span><span class="o">?</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="mf">2.0</span><span class="p">,</span> <span class="s">&quot;chocolate milk&quot;</span><span class="p">,</span> <span class="s">&quot;15789&quot;</span><span class="p">};</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">discordance</span><span class="o">::</span><span class="n">deque</span><span class="o">&lt;</span><span class="n">discordance</span><span class="o">::</span><span class="n">var</span>  <span class="o">&gt;</span> <span class="n">bucket</span><span class="o">=</span><span class="p">{</span><span class="mf">2.0</span><span class="p">,</span> <span class="s">&quot;chocolate milk&quot;</span><span class="p">,</span> <span class="s">&quot;15789&quot;</span><span class="p">};</span>
+</code></pre></div>
+
+
+<h2 id="array-slicing">Array Slicing</h2>
+<p>Arrays can also be sliced like so.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">auto</span> <span class="n">small_bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="mi">2</span><span class="p">];</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="k">auto</span> <span class="n">small_bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">.</span><span class="n">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
+</code></pre></div>
+
+
+<h2 id="if-else-else-if-while-statements">If, Else, Else If, While Statements</h2>
+<p>Statements can be declared with a Python-esque syntax.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">if</span> <span class="n">bucket</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mf">2.0</span><span class="o">:</span>
+    <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">bucket</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+<span class="k">else</span> <span class="k">if</span> <span class="n">bucket</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="s">&quot;chocolate milk&quot;</span><span class="o">:</span>
+    <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">bucket</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+<span class="k">else</span><span class="o">:</span>
+    <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">bucket</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+<span class="k">while</span> <span class="nb">true</span><span class="o">:</span>
+    <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;True&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="k">if</span> <span class="p">(</span> <span class="n">bucket</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mf">2.0</span> <span class="p">){</span>
+    <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">bucket</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="n">bucket</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="s">&quot;chocolate milk&quot;</span> <span class="p">){</span>
+    <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">bucket</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span><span class="p">{</span>
+    <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">bucket</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">while</span> <span class="p">(</span> <span class="nb">true</span> <span class="p">){</span>
+    <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;True&quot;</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<h2 id="for-loops-requires-c11">For loops (Requires C++11)</h2>
+<p>For loops follow the same gist. If you don't specify a type for the loop variable, it'll be assumed to be auto.</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">int</span> <span class="n">numbers</span><span class="p">[</span><span class="mi">10</span><span class="o">?</span><span class="p">][</span><span class="o">?</span><span class="p">]</span><span class="o">=</span><span class="p">{</span>     
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">},</span>
+    <span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="o">-</span><span class="mi">9</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">}</span>
+<span class="p">};</span>
+<span class="k">for</span> <span class="n">row</span> <span class="n">in</span> <span class="nl">numbers</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">column</span> <span class="n">in</span> <span class="nl">row</span><span class="p">:</span>
+        <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">column</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">discordance</span><span class="o">::</span><span class="n">deque</span><span class="o">&lt;</span><span class="n">discordance</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span> <span class="o">&gt;&gt;</span> <span class="n">numbers</span><span class="o">=</span><span class="p">{</span>
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">},</span>
+    <span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="o">-</span><span class="mi">9</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">}</span>
+<span class="p">};</span>
+<span class="k">for</span> <span class="p">(</span> <span class="k">auto</span> <span class="nl">row</span> <span class="p">:</span> <span class="n">numbers</span> <span class="p">){</span>
+    <span class="k">for</span> <span class="p">(</span> <span class="k">auto</span> <span class="nl">column</span> <span class="p">:</span> <span class="n">row</span> <span class="p">){</span>
+        <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">column</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<p>You can specify whether to access by value or reference.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span> <span class="o">&amp;</span><span class="n">item</span> <span class="n">in</span> <span class="nl">bucket</span><span class="p">:</span>
+    <span class="k">static</span> <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">item</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="k">for</span> <span class="p">(</span> <span class="k">auto</span> <span class="o">&amp;</span><span class="nl">item</span> <span class="p">:</span> <span class="n">bucket</span> <span class="p">){</span>
+    <span class="k">static</span> <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+    <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+    <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">item</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<p>Alternatively, you can manually specify the type of variable to cast to,
+though this is not normally considered good practice. Refer to C++ standards.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span> <span class="n">row</span> <span class="n">in</span> <span class="nl">numbers</span><span class="p">:</span>
+    <span class="k">for</span> <span class="kt">int</span> <span class="n">column</span> <span class="n">in</span> <span class="nl">row</span><span class="p">:</span>
+        <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">column</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="k">for</span> <span class="p">(</span> <span class="k">auto</span> <span class="nl">row</span> <span class="p">:</span> <span class="n">numbers</span> <span class="p">){</span>
+    <span class="k">for</span> <span class="p">(</span> <span class="kt">int</span> <span class="nl">column</span> <span class="p">:</span> <span class="n">row</span> <span class="p">){</span>
+        <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">column</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<h2 id="class-and-function-declaration">Class and Function Declaration</h2>
+<p>Classes and functions can be declared much the same way.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">apple</span><span class="o">:</span>
+        <span class="n">string</span> <span class="n">color</span><span class="o">=</span><span class="s">&quot;green&quot;</span><span class="p">;</span>
+        <span class="err">@</span> <span class="n">weight</span><span class="o">=</span><span class="s">&quot;2kg&quot;</span><span class="p">;</span>
+        <span class="n">apple</span><span class="p">()</span><span class="o">:</span>
+            <span class="n">weight</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span>
+            <span class="n">weight</span><span class="o">=</span><span class="mf">2.0</span><span class="o">+</span><span class="n">weight</span><span class="p">;</span>
+            <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">weight</span><span class="p">;</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">apple</span><span class="p">{</span>
+        <span class="n">string</span> <span class="n">color</span><span class="o">=</span><span class="s">&quot;green&quot;</span><span class="p">;</span>
+        <span class="n">discordance</span><span class="o">::</span><span class="n">var</span> <span class="n">weight</span><span class="o">=</span><span class="s">&quot;2kg&quot;</span><span class="p">;</span>
+        <span class="n">apple</span><span class="p">(){</span>
+            <span class="n">weight</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span>
+            <span class="n">weight</span><span class="o">=</span><span class="mf">2.0</span><span class="o">+</span><span class="n">weight</span><span class="p">;</span>
+            <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">weight</span><span class="p">;</span>
+        <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div>
+
+
+<h2 id="automatic-header-generation">Automatic Header Generation</h2>
+<h2 id="c-compatibility">C++ Compatibility</h2>
+<h2 id="include">#Include</h2>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="assets/javascripts/vendor.d710d30a.min.js"></script>
+      <script src="assets/javascripts/bundle.5f27aba8.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: ".",
+          features: [],
+          search: Object.assign({
+            worker: "assets/javascripts/worker/search.27c6a5e6.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
