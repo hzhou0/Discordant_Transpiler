@@ -80,7 +80,7 @@ layout = [[sg.Menu(menu_def)],
            sg.Combo(("transpile", "make", "run"), key='mode', default_value=GUI.mode, enable_events=True,
                     readonly=True),
            sg.Text(key='status', size=(10, 1))]]
-window = sg.Window('Discordant Transpiler', icon=resource_path("app.ico"), layout=layout, resizable=True)
+window = sg.Window('Discordance', icon=resource_path("app.ico"), layout=layout, resizable=True)
 while True:  # Event Loop
     event, values = window.read()
     if event in (None, 'Exit'):

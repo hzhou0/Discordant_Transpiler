@@ -8,12 +8,6 @@ namespace discordance{
     class vector : public std::vector<t> {
         using std::vector<t>::vector;
     public:
-        template<typename s>
-        inline vector<t> &operator=(vector<s> a) {
-            for (int i = 0; i < a.size(); i++) {
-                this->at(i) = a[i];
-            }
-        };
 
         template<typename s>
         inline operator vector<s>() {
@@ -47,31 +41,24 @@ namespace discordance{
         using std::deque<t>::deque;
     public:
         template<typename s>
-        inline deque<t> &operator=(deque<s> a) {
-            for (int i = 0; i < a.size(); i++) {
-                this->at(i) = a[i];
+        inline operator deque<s>() {
+            deque <s> x;
+            x.resize(this->size());
+            for (int i = 0; i < this->size(); i++) {
+                x[i] = (s) this->at(i);
             }
-        };
-
+            return x;
+        }
         template<typename s>
         inline operator vector<s>() {
-            deque <s> x;
+            vector <s> x;
             x.resize(this->size());
             for (int i = 0; i < this->size(); i++) {
                 x[i] = (s) this->at(i);
             }
             return x;
         }
-        template<typename s>
-        inline operator deque<s>(){
-            deque <s> x;
-            x.resize(this->size());
-            for (int i = 0; i < this->size(); i++) {
-                x[i] = (s) this->at(i);
-            }
-            return x;
-        }
-        discordance::deque<t> slice(int first, int last){
+        discordance::vector<t> slice(int first, int last){
             if(last<0){
                 last=this->size()+last;
             }
@@ -3158,14 +3145,6 @@ namespace discordance {
             return t(a)%b;
         }
         template<typename t>
-        friend t operator<(t a, const var& b){
-            return a<t(b);
-        }
-        template<typename t>
-        friend t operator<(const var&a, t b){
-            return t(a)<b;
-        }
-        template<typename t>
         friend t operator>(t a, const var& b){
             return a>t(b);
         }
@@ -3174,12 +3153,12 @@ namespace discordance {
             return t(a)>b;
         }
         template<typename t>
-        friend t operator<=(t a, const var& b){
-            return a<=t(b);
+        friend t operator<(t a, const var& b){
+            return a<t(b);
         }
         template<typename t>
-        friend t operator<=(const var&a, t b){
-            return t(a)<=b;
+        friend t operator<(const var&a, t b){
+            return t(a)<b;
         }
         template<typename t>
         friend t operator>=(t a, const var& b){
@@ -3190,8 +3169,26 @@ namespace discordance {
             return t(a)>=b;
         }
         template<typename t>
-        friend t operator==(t a, const var& b){
-            return a==t(b);
+        friend t operator<=(t a, const var& b){
+            return a<=t(b);
+        }
+        template<typename t>
+        friend t operator<=(const var&a, t b){
+            return t(a)<=b;
+        }
+        friend bool operator==(const char *a, const var& b){
+            std::string a_string=a;
+            std::string b_string=b;
+            return a_string==b_string;
+        }
+        friend bool operator==(const var& a, const char *b){
+            std::string b_string=b;
+            std::string a_string=a;
+            return a_string==b_string;
+        }
+        template<typename t>
+        friend t operator==(t a, const var& b) {
+            return a == t(b);
         }
         template<typename t>
         friend t operator==(const var&a, t b){
@@ -3213,24 +3210,5 @@ namespace discordance {
         friend t operator||(const var&a, t b){
             return t(a)||b;
         }
-        friend var operator-(const var&a){
-            switch (a.Type) {
-                default:
-                    throw std::bad_cast();
-                case Bool:
-                    return -*reinterpret_cast<bool *>(a.val);
-                case Integer:
-                    return -*reinterpret_cast<int *>(a.val);
-                case Long:
-                    return -*reinterpret_cast<long *>(a.val);
-                case LL:
-                    return -*reinterpret_cast<long long *>(a.val);
-                case Double:
-                    return -*reinterpret_cast<double *>(a.val);
-                case LD:
-                    return -*reinterpret_cast<long double *>(a.val);
-            }
-        }
     };
 }
-

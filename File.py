@@ -235,10 +235,10 @@ class File:
         """
         # swap statements for marks
         self.mark_statements()
-        expBox_list = self.cat_by_indent(r"\d@~@\d\n")
-        #file = open("marked.txt", "w")
-        #file.write(self.string)
-        #file.close()
+        expBox_list = self.cat_by_indent(r"\d*@~@\d*\n")
+        file = open("marked.txt", "w")
+        file.write(self.string)
+        file.close()
         # iterate through all matches, deepest indented ones first
         for expBox in expBox_list:
             for expr in expBox.expr_list:
@@ -414,3 +414,9 @@ class File:
     # for i in range(line_count):
     #    lines.append(self.string[expr.end() + 1:])
     # str_lines = ''.join(lines)
+
+
+if __name__ == "__main__":
+    file = File("test_proj/discordance.dis")
+    file.process()
+    print(file.string)
