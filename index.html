@@ -205,6 +205,39 @@
     Usage
   </a>
   
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-line" class="md-nav__link">
+    Command Line
+  </a>
+  
+    <nav class="md-nav" aria-label="Command Line">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gui" class="md-nav__link">
+    GUI
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -274,6 +307,26 @@
           <li class="md-nav__item">
   <a href="#include" class="md-nav__link">
     #Include
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-system" class="md-nav__link">
+    Build System
+  </a>
+  
+    <nav class="md-nav" aria-label="Build System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#things-to-know" class="md-nav__link">
+    Things to Know
   </a>
   
 </li>
@@ -419,7 +472,78 @@ C++ constructs can be used in discordance, and vice versa. </p>
 
 
 <h2 id="installation">Installation</h2>
+<p>Currently, Discordance is only available on Windows. </p>
+<p>The transpiler requires g++. Make sure you have <a href="https://chocolatey.org/install">Chocolatey</a> installed.
+You can then install g++ through <a href="https://www.cygwin.com">Cygwin</a>.  </p>
+<div class="codehilite"><pre><span></span><code>choco install cygwin
+</code></pre></div>
+
+
+<p>Download either the CLI or the GUI binary from my release <a href="https://github.com/NeverLucky123/Discordant_Transpiler/releases">page</a>. If you downloaded the CLI,
+add it to PATH.</p>
 <h2 id="usage">Usage</h2>
+<h3 id="command-line">Command Line</h3>
+<p>Once <code>Transpiler.exe</code> is added to PATH, you should have access to the <code>Transpile</code> command in terminal. It takes two positional
+arguements and 2 optional arguements.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Expects</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Position 1</td>
+<td>Either <code>transpile</code>,<code>make</code>, or <code>run</code></td>
+<td>The action for the Transpiler to perform.  <code>transpile</code> generates C++ source files, <code>make</code> transpiles   and creates the executable, <code>run</code> does all of the above and runs the executable.</td>
+</tr>
+<tr>
+<td>Position 2</td>
+<td>File Path</td>
+<td>The main input file. This should contain <code>main()</code>.</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>Dir Path</td>
+<td>Include directories to search for header and source files in your project. Defaults to the directory of previous option.</td>
+</tr>
+<tr>
+<td>-o</td>
+<td>File Path</td>
+<td>The Path to the created executable. Defaults to File Path given + <code>.exe</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples">Examples</h4>
+<ul>
+<li>Generates C++ source files for <code>testfile.dis</code><br />
+<code>transpiler transpile C:\Users\henry\PycharmProjects\Discordant_Transpiler\venv\Discordance\Include\testfile.dis</code></li>
+<li>Runs <code>testfile.dis</code><br />
+<code>transpiler run C:\Users\henry\PycharmProjects\Discordant_Transpiler\venv\Discordance\Include\testfile.dis</code></li>
+</ul>
+<h3 id="gui">GUI</h3>
+<p>No setup is needed. Just click on the executable. The GUI application will create two pickle files in your
+application data directory under <code>.discordance/</code>. They take up minimal space and contains your applications settings.</p>
+<p><strong>All your inputs are automatically saved, even past closing the app.</strong></p>
+<ul>
+<li>
+<p><code>Input File</code> is the main file you want to transpile, make or run.</p>
+</li>
+<li>
+<p><code>Std Out</code> redirects any errors or program outputs.</p>
+</li>
+<li>
+<p><code>Configure-&gt;Includes</code> to search in more directories for header files.</p>
+</li>
+<li>
+<p><code>Configure-&gt;Cache</code> to clear the project cache. This is equivalent to a <code>--clean</code> build for all projects.</p>
+</li>
+<li>
+<p>Use the toggle to select the action for the Transpiler to perform. <code>transpile</code> generates C++ source files, <code>make</code> transpiles and creates the executable, <code>run</code> does all of the above and runs the executable.</p>
+</li>
+</ul>
 <h2 id="language-reference">Language Reference</h2>
 <p>This reference shows source Discordance above output C++. 
 Familiarity with C++ and its STL is assumed. </p>
@@ -661,6 +785,23 @@ dependency detection as part of the compilation process, <code>forward declarati
 and will cause compilation to fail. When <code>.dis</code> is included, the transpiler creates its <code>.h</code> and <code>.cpp</code> counterparts and
 includes the created <code>.h</code> instead.</p>
 <p>Basically, it works how you expect to. See compilation for additional details. </p>
+<h2 id="build-system">Build System</h2>
+<p>Discordance uses a build system that is capable of inferring all dependencies from your main file and recompiling only when
+files or their dependencies have changed. Essentially, its GNU make with none of the setup.</p>
+<p>Discordance does this by recursively parsing <code>#include</code> statements and then searching for those files in the given directories.
+This means, however, that two files with the same name cannot exist in the given directories, as Discordance would not be able
+to distinguish them. Discordance then checks if the file has changed or if one of its dependencies has changed to figure if to 
+recompile it. It does this by checking the file modification time against the last time the executable of that name was compiled.
+All executables that have ever been compiled and their last compile timestamp is kept in a cache file. </p>
+<h3 id="things-to-know">Things to Know</h3>
+<ul>
+<li>No makefiles required</li>
+<li>Do not use forward declaration</li>
+<li>Do not use absolute file paths in <code>#include</code></li>
+<li>Only changed files are compiled to lower compile time</li>
+<li>Clear the cache if you want to rebuild all files.</li>
+<li>.o files are kept in <code>.obj/</code> in their source directory.</li>
+</ul>
                 
               
               
