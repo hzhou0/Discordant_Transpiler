@@ -2,13 +2,10 @@ site_name: Discordance
 markdown_extensions:
   - codehilite
 nav:
-  - Langauge Reference: index.md
   - Github: 'https://github.com/NeverLucky123/Discordant_Transpiler/'
 theme:
     name: material
-    highlightjs: true
-    hljs_languages:
-        - yaml
-        - rust
+    logo: 'favicon.png'
+    favicon: 'favicon.png'
 docs_dir: docs
 site_dir: site

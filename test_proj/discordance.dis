@@ -1,5 +1,4 @@
 #include <iostream>
-#include "a1.h"
 using namespace std;
 //dynamic function
 @ return_any(@ any):
@@ -10,6 +9,7 @@ int main():
 
     //as can classes
     class apple:
+
         string color="green";
         //variables declared as type @ can take on any primitive value, including std::string
         @ weight="2kg";
@@ -21,14 +21,6 @@ int main():
             cout<<weight;
 
     //easy declaration of vectors
-    std::string desserts[?];
-    desserts={"apple pie", "chocolate cake", "waffles", "cupcakes"};
-    std::string colors[5?];
-    colors={"green", "blue", "magenta", "teal", "crimson"};
-    colors=desserts;
-    double calorie_count[?]={100, 350, 70, 50};
-    int precise_count[?]=calorie_count;
-
     int numbers[10?][?]={     //[num?] will declare a vector, [?] a deque
     {1,2,3,4,5,6,7,8,9,10},
     {-1,-2,-3,-4,-5,-6,-7,-8,-9,-10}
@@ -36,24 +28,12 @@ int main():
 
     //python-style for statements
     for row in numbers:
-        for int column in row:
+        for column in row:
             cout<<column<<endl;
 
     //arrays of unlike things
     @ bucket[?]={2.0, "chocolate milk", "15789"};
-
-    if bucket[0]==2.0:
-        cout<<bucket[0]<<endl;
-    else if bucket[1]=="chocolate milk":
-        cout<<bucket[1]<<endl;
-    else:
-        cout<<bucket[2]<<endl;
-    while true:
-        cout<<"True"<<endl;
-
-    for &item in bucket:
-        static int i;
-        i++;
+    for item in bucket:
         cout<<item<<endl;
 
     //array slicing
@@ -66,6 +46,5 @@ int main():
     cout<<return_any(5)<<endl;
     cout<<return_any("hello")<<endl;
 
-    a2();
 
     return 0;

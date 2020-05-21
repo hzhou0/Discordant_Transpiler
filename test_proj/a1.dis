@@ -1,0 +1,4 @@
+#include "a2.h"
+void a1(){
+    std::cout<<"a1"<<std::endl;
+}

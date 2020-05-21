@@ -297,8 +297,8 @@ if __name__ == "__main__":
     parser.add_argument("action", choices=['transpile', 'make', 'run'])
     parser.add_argument("infile")
     parser.add_argument("-o", "-outfile", nargs='?')
-    args = parser.parse_args(["make", "test_proj/discordance.dis"])
-    # args = parser.parse_args()
+    # args = parser.parse_args(["make", "test_proj/discordance.dis"])
+    args = parser.parse_args()
     a = project(os.path.abspath(args.infile), args.i, args.o)
 
     a.transpile()

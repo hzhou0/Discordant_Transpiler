@@ -89,6 +89,12 @@ while True:  # Event Loop
         GUI.save_state(infile=values['infile'])
     elif event == 'mode':
         GUI.save_state(mode=values['mode'])
+    elif event == 'How to Use':
+        import webbrowser
+        webbrowser.open("https://neverlucky123.github.io/Discordant_Transpiler/#usage")
+    elif event == 'Language Documentation':
+        import webbrowser
+        webbrowser.open("https://neverlucky123.github.io/Discordant_Transpiler/#language-reference")
     elif event == 'Includes':
         includes = [os.path.dirname(window['infile'].get()) + " (Directory of Input File)"]
         if GUI.include_dirs:
@@ -174,5 +180,4 @@ while True:  # Event Loop
                 window['status'].update("Failed", text_color="Red")
         except Exception as e:
             print(e)
-
 window.close()

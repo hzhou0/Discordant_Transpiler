@@ -1,7 +1,126 @@
+#
+##Introduction
+<br>
+**Discordance is a language that compiles into C++.** Despite it's insistence on importing code via Copy Pasting, C++ is an wickedly fast and sometimes
+even readable language. Discordance attempts to highlight the good parts of C++ and paper over the bad parts.
+
+Discordance is just C++. It compiles into C++ source with no performance penalties, and the header is generated for you. 
+C++ constructs can be used in discordance, and vice versa. 
+##Overview
+**main.dis**
+```c++
+#include <iostream>
+using namespace std;
+//dynamic function
+@ return_any(@ any):
+  return any;
+//Functions can be declared with python syntax
+int main():
+    //as can classes
+    class apple:
+        string color="green";
+        //variables declared as type @ can take on any primitive value, including std::string
+        @ weight="2kg";
+        apple():
+            weight=2;
+            weight=2.0+weight;
+            //use if just like a normal variable
+            cout<<weight;
+    //easy declaration of vectors
+    int numbers[10?][?]={     //[num?] will declare a vector, [?] a deque
+    {1,2,3,4,5,6,7,8,9,10},
+    {-1,-2,-3,-4,-5,-6,-7,-8,-9,-10}
+    };
+    //python-style for statements
+    for row in numbers:
+        for column in row:
+            cout<<column<<endl;
+    //arrays of unlike things
+    @ bucket[?]={2.0, "chocolate milk", "15789"};
+    for item in bucket:
+        cout<<item<<endl;
+    //array slicing
+    auto small_bucket=bucket[1:2];
+    for item in small_bucket:
+        cout<<item<<endl;
+    //dynamic functions
+    cout<<return_any(2.0)<<endl;
+    cout<<return_any(5)<<endl;
+    cout<<return_any("hello")<<endl;
+    return 0;
+```
+**main.h**
+```c++
+// discordance.h
+//
+#ifndef LZZ_discordance_h
+#define LZZ_discordance_h
+#include "__Discordance.h"
+using namespace discordance;
+using discordance::deque; using discordance::vector; using discordance::var;
+#include <iostream>
+#define LZZ_INLINE inline
+discordance::var return_any (discordance::var any);
+int main ();
+#undef LZZ_INLINE
+#endif
+```
+**main.cpp**
+```c++
+// discordance.cpp
+//
+
+#include "discordance.h"
+#include "__Discordance.h"
+using namespace discordance;
+using discordance::deque; using discordance::vector; using discordance::var;
+#define LZZ_INLINE inline
+using namespace std;
+discordance::var return_any (discordance::var any)
+                                                   {
+  return any;
+}
+int main ()
+          {
+    class apple{
+        string color="green";
+        discordance::var  weight="2kg";
+        apple(){
+            weight=2;
+            weight=2.0+weight;
+            cout<<weight;
+        }
+    };
+    discordance::deque<discordance::vector<int >> numbers={
+    {1,2,3,4,5,6,7,8,9,10},
+    {-1,-2,-3,-4,-5,-6,-7,-8,-9,-10}
+    };
+    for ( auto row : numbers ){
+        for ( auto column : row ){
+            cout<<column<<endl;
+        }
+    }
+    discordance::deque<discordance::var  > bucket={2.0, "chocolate milk", "15789"};
+    for ( auto item : bucket ){
+        cout<<item<<endl;
+    }
+    auto small_bucket=bucket.slice(1,2);
+    for ( auto item : small_bucket ){
+        cout<<item<<endl;
+    }
+    cout<<return_any(2.0)<<endl;
+    cout<<return_any(5)<<endl;
+    cout<<return_any("hello")<<endl;
+    return 0;
+}
+#undef LZZ_INLINE
+```
+##Installation
+##Usage
+##Language Reference
 This reference shows source Discordance above output C++. 
 Familiarity with C++ and its STL is assumed. 
-
-##@ Variables
+###Dynamic Typing
 Variables declared with the @ keyword can be assigned any single primitive value.
 This includes ints, floats, char[], and std::string and excludes pointers, references, or classes.
 ```c++
@@ -17,7 +136,7 @@ weight=2.0+weight;
 Dynamic variables are implemented as a class in C++. This means they are around 60 times slower than their primitive counterpart,
 or about as fast as a python primitive, mostly due to constructor overhead. They also cannot be passed into templated or overloaded functions,
 as they cannot resolve their own type. 
-##Dynamic Arrays
+###Dynamic Arrays
 Dynamic arrays are declared with [?] or [**SOME_NUMBER**?]. If a number is given, then a `vector` is created, otherwise a `deque` is created. 
 This is because if space in `vector` is not reserved, performance suffers immensely. 
 ```c++
@@ -64,7 +183,7 @@ Dynamic arrays can be created with the @ keyword, which gives them the ability t
 ```c++
 discordance::deque<discordance::var  > bucket={2.0, "chocolate milk", "15789"};
 ```
-##Array Slicing
+###Array Slicing
 Arrays can also be sliced like so.
 ```c++
 auto small_bucket=bucket[1:2];
@@ -72,7 +191,7 @@ auto small_bucket=bucket[1:2];
 ```c++
 auto small_bucket=bucket.slice(1,2);
 ```
-##If, Else, Else If, While Statements
+###If, Else, Else If, While Statements
 Statements can be declared with a Python-esque syntax.
 ```c++
 if bucket[0]==2.0:
@@ -98,7 +217,7 @@ while ( true ){
     cout<<"True"<<endl;
 }
 ```
-##For loops (Requires C++11)
+###For loops (Requires C++11)
 For loops follow the same gist. If you don't specify a type for the loop variable, it'll be assumed to be auto.
 ```c++
 int numbers[10?][?]={     
@@ -149,7 +268,7 @@ for ( auto row : numbers ){
     }
 }
 ```
-##Class and Function Declaration
+###Class and Function Declaration
 Classes and functions can be declared much the same way.
 ```c++
 class apple:
@@ -171,8 +290,49 @@ class apple{
         }
 };
 ```
-##Automatic Header Generation
+###Automatic Header Generation
+Discordance is a header-less language. There is no need to write your own header files as one will be automatically generated for you.
+Write your .dis file like its your source file. 
+   
+**a1.dis**
+```c++
+#include "a2.h"
+void a1(){
+    std::cout<<"a1"<<std::endl;
+}
+```
+**a1.h**
+```c++
+#ifndef LZZ_a1_h
+#define LZZ_a1_h
+#include "__Discordance.h"
+using namespace discordance;
+using discordance::deque; using discordance::vector; using discordance::var;
+#include "a2.h"
+#define LZZ_INLINE inline
+void a1 ();
+#undef LZZ_INLINE
+#endif
+```
+**a1.cpp**
+```c++
+#include "a1.h"
+#include "__Discordance.h"
+using namespace discordance;
+using discordance::deque; using discordance::vector; using discordance::var;
+#define LZZ_INLINE inline
+void a1 ()
+         {
+    std::cout<<"a1"<<std::endl;
+}
+#undef LZZ_INLINE
+```
+###C++ Compatibility
+Discordance is a superset of C++. All C++ is valid code. The only exception is because of automatic header generation and
+dependency detection as part of the compilation process, `forward declaration` is not supported. 
+###\#Include 
+You can include `.h` files and `.dis` in both `.dis`, `.cpp` or `.cxx` files. Other extensions are currently not supported
+and will cause compilation to fail. When `.dis` is included, the transpiler creates its `.h` and `.cpp` counterparts and
+includes the created `.h` instead.
 
-##C++ Compatibility
-
-##\#Include 
+Basically, it works how you expect to. See compilation for additional details. 
