@@ -190,12 +190,6 @@ namespace discordance {
             return *this;
         };
 
-        //destructor
-        inline ~var() {
-            free(val);
-            val = nullptr;
-        }
-
         //arithmetic operations
         var &operator+(const var &a) const {
             switch (this->Type) {

@@ -202,16 +202,19 @@ class project:
             file.sync(address + "_")
             # split processed file into source and header
             if platform.system() == 'Windows':
+                shellmode=True
                 lazycpp = os.path.join("lazycpp", "lazycpp.exe")
             elif platform.system() == 'Darwin':
+                shellmode=False
                 lazycpp = os.path.join("lazycpp", "mac_lazycpp")
             elif platform.system() == 'Linux':
+                shellmode=False
                 lazycpp = os.path.join("lazycpp", "linux_lazycpp")
             else:
                 raise ValueError("Unsupported Operating System")
             subprocess.call([resource_path(lazycpp),
                              "-o", os.path.dirname(address),
-                             os.path.normpath(address + "_")], shell=True)
+                             os.path.normpath(address + "_")], shell=shellmode)
             # remove temp processed file
             os.remove(address + "_")
             # compare new files to previous ones if they exist

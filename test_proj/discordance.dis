@@ -36,7 +36,6 @@ int main():
     for item in bucket:
         cout<<item<<endl;
 
-    //array slicing
     auto small_bucket=bucket[1:2];
     for item in small_bucket:
         cout<<item<<endl;

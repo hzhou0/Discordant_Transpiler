@@ -2,7 +2,7 @@ import pickle
 import os
 import PySimpleGUI as sg
 import subprocess
-
+import sys
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -15,7 +15,6 @@ def resource_path(relative_path):
     except Exception:
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
-
 
 def data_path(relative_path):
     """Get absolute path to a data file in the correct cross-platform app folder"""
