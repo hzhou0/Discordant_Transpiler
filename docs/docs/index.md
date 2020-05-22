@@ -116,7 +116,49 @@ int main ()
 #undef LZZ_INLINE
 ```
 ##Installation
+Currently, Discordance is only available on Windows. 
+
+The transpiler requires g++. Make sure you have [Chocolatey](https://chocolatey.org/install) installed.
+You can then install g++ through [Cygwin](https://www.cygwin.com).  
+```bash
+choco install cygwin
+```
+Download either the CLI or the GUI binary from my release [page](https://github.com/NeverLucky123/Discordant_Transpiler/releases). If you downloaded the CLI,
+add it to PATH.
 ##Usage
+###Command Line
+Once `Transpiler.exe` is added to PATH, you should have access to the `Transpile` command in terminal. It takes two positional
+arguements and 2 optional arguements.
+
+| Option     | Expects                             | Description                                                                                                                                                                               |
+|------------|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Position 1 | Either `transpile`,`make`, or `run` |  The action for the Transpiler to perform.  `transpile` generates C++ source files, `make` transpiles   and creates the executable, `run` does all of the above and runs the executable.  |
+| Position 2 | File Path                           | The main input file. This should contain `main()`.                                                                                                                                        |
+| -i         | Dir Path                            |  Include directories to search for header and source files in your project. Defaults to the directory of previous option.                                                                 |
+| -o         | File Path                           |  The Path to the created executable. Defaults to File Path given + `.exe`.                                                                                                                |
+
+####Examples
++ Generates C++ source files for `testfile.dis`  
+   `transpiler transpile C:\Users\henry\PycharmProjects\Discordant_Transpiler\venv\Discordance\Include\testfile.dis`
++ Runs `testfile.dis`  
+   `transpiler run C:\Users\henry\PycharmProjects\Discordant_Transpiler\venv\Discordance\Include\testfile.dis`
+###GUI
+No setup is needed. Just click on the executable. The GUI application will create two pickle files in your
+application data directory under `.discordance/`. They take up minimal space and contains your applications settings.
+
+**All your inputs are automatically saved, even past closing the app.**
+
++ `Input File` is the main file you want to transpile, make or run.
+
++ `Std Out` redirects any errors or program outputs.
+
++ `Configure->Includes` to search in more directories for header files.
+
++ `Configure->Cache` to clear the project cache. This is equivalent to a `--clean` build for all projects.
+
++ Use the toggle to select the action for the Transpiler to perform. `transpile` generates C++ source files, `make` transpiles and creates the executable, `run` does all of the above and runs the executable.
+
+
 ##Language Reference
 This reference shows source Discordance above output C++. 
 Familiarity with C++ and its STL is assumed. 
@@ -336,3 +378,19 @@ and will cause compilation to fail. When `.dis` is included, the transpiler crea
 includes the created `.h` instead.
 
 Basically, it works how you expect to. See compilation for additional details. 
+##Build System
+Discordance uses a build system that is capable of inferring all dependencies from your main file and recompiling only when
+files or their dependencies have changed. Essentially, its GNU make with none of the setup.
+
+Discordance does this by recursively parsing `#include` statements and then searching for those files in the given directories.
+This means, however, that two files with the same name cannot exist in the given directories, as Discordance would not be able
+to distinguish them. Discordance then checks if the file has changed or if one of its dependencies has changed to figure if to 
+recompile it. It does this by checking the file modification time against the last time the executable of that name was compiled.
+All executables that have ever been compiled and their last compile timestamp is kept in a cache file. 
+###Things to Know
++ No makefiles required
++ Do not use forward declaration
++ Do not use absolute file paths in `#include`
++ Only changed files are compiled to lower compile time
++ Clear the cache if you want to rebuild all files.
++ .o files are kept in `.obj/` in their source directory.

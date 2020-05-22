@@ -70,7 +70,7 @@ namespace discordance{
             } else if(last<first){
                 throw std::invalid_argument("last arguement before first arguement: slice invalid");
             }
-            discordance::deque<t> dst(last-first);
+            discordance::vector<t> dst(last-first);
             std::copy(this->begin()+first, this->begin()+last, dst.begin());
             return dst;
         }
