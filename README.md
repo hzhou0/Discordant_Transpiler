@@ -1,5 +1,4 @@
 ## Introduction
-<br>
 **Discordance is a language that compiles into C++.** Despite it's insistence on importing code via Copy Pasting, C++ is an wickedly fast and sometimes
 even readable language. Discordance attempts to highlight the good parts of C++ and paper over the bad parts.
 
@@ -114,7 +113,7 @@ int main ()
 }
 #undef LZZ_INLINE
 ```
-##Full Documentation
+## Full Documentation
 View the install instructions and full docs on github pages
 [https://neverlucky123.github.io/Discordant_Transpiler/]()
 
