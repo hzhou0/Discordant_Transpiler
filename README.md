@@ -1,51 +1,120 @@
-# Discordant Transpiler
-The transpiler for **Discordant**, a language that compiles to C++, written in Python. 
-## Installation Instructions
-### Perquisites
-+  Windows 10
-    +   Unix and Linux releases planned
-+ g++, part of the gcc toolchain, is required for building executables  
-    +  Install with http://mingw.org/ for windows  
-    +  Check with `g++ --version`
-### Install
-   + Download Transpiler.exe and testfile.dis from the release page
-   
-   + Add Transpiler.exe to path
-        
-   + `Transpiler run .../discordance.dis`  
+##Introduction
+<br>
+**Discordance is a language that compiles into C++.** Despite it's insistence on importing code via Copy Pasting, C++ is an wickedly fast and sometimes
+even readable language. Discordance attempts to highlight the good parts of C++ and paper over the bad parts.
 
-   
-### How to Use
-    Transpiler [run/make/transpiler] [PATH TO FILE] -I[directories to search in for includes]
-## Implemented features
-+ `If` `else if` `else` `while` `do..while` `for` statements by indentation  
-+ Class and function definitions by indentation  
-+ Statement conditions are no longer required to be bracketed  
-    + example:` if num_a==2: do stuff` vs `if(num_a==2){do stuff}`  
-+ Range based `for` loops are assumed to have an auto variable as condition  
-+ Dynamic typing, modeled after `std::any`, can implicitly cast to any primitive value  
-    + example: `@ my_var; my_var=2; my_var+=3.5; my_var="hello"`;   
-+ Initialize vectors/deque with simplified syntax  
-    + example: `typename var[100?]` vs `vector<typename> var(100)`;  
-    + If no number is given, a deque is created instead. Deques have better performance if memory is not reserved beforehand. 
-+ Auto-generated header files with lzz. Just write the source file and a .h file is generated as part of the build pipeline. 
-## Features under development
-+ Postfix `if`. This will be converted into c++ ternary statements.
-    +  example: `my_num=2 if x==3, 3 if x==5, 8 if c==9`
-+ Recursive build tree to replace make or cmake by parsing includes
-+ STL container slicing
-## Features being considered
-+  None
-## Features discarded
-+   Single if line statements
-    +   current syntax is sufficient
-+   Implicit multithreading
-    +   too hardware-dependant to implement
-+   List comprehensions
-    +   range based `for` loops are sufficient and more readable
-+   `when` statement
-    +   c++ threads cannot be destroyed, and thus the statement  
-    cannot go out of scope properly
-+   Chain comparisons
-    +   the transpiler is contextless, and cannot parse `<` and `>`  
-    due to usage in c++ templates
+Discordance is just C++. It compiles into C++ source with no performance penalties, and the header is generated for you. 
+C++ constructs can be used in discordance, and vice versa. 
+##Overview
+**main.dis**
+```c++
+#include <iostream>
+using namespace std;
+//dynamic function
+@ return_any(@ any):
+  return any;
+//Functions can be declared with python syntax
+int main():
+    //as can classes
+    class apple:
+        string color="green";
+        //variables declared as type @ can take on any primitive value, including std::string
+        @ weight="2kg";
+        apple():
+            weight=2;
+            weight=2.0+weight;
+            //use if just like a normal variable
+            cout<<weight;
+    //easy declaration of vectors
+    int numbers[10?][?]={     //[num?] will declare a vector, [?] a deque
+    {1,2,3,4,5,6,7,8,9,10},
+    {-1,-2,-3,-4,-5,-6,-7,-8,-9,-10}
+    };
+    //python-style for statements
+    for row in numbers:
+        for column in row:
+            cout<<column<<endl;
+    //arrays of unlike things
+    @ bucket[?]={2.0, "chocolate milk", "15789"};
+    for item in bucket:
+        cout<<item<<endl;
+    //array slicing
+    auto small_bucket=bucket[1:2];
+    for item in small_bucket:
+        cout<<item<<endl;
+    //dynamic functions
+    cout<<return_any(2.0)<<endl;
+    cout<<return_any(5)<<endl;
+    cout<<return_any("hello")<<endl;
+    return 0;
+```
+**main.h**
+```c++
+// discordance.h
+//
+#ifndef LZZ_discordance_h
+#define LZZ_discordance_h
+#include "__Discordance.h"
+using namespace discordance;
+using discordance::deque; using discordance::vector; using discordance::var;
+#include <iostream>
+#define LZZ_INLINE inline
+discordance::var return_any (discordance::var any);
+int main ();
+#undef LZZ_INLINE
+#endif
+```
+**main.cpp**
+```c++
+// discordance.cpp
+//
+
+#include "discordance.h"
+#include "__Discordance.h"
+using namespace discordance;
+using discordance::deque; using discordance::vector; using discordance::var;
+#define LZZ_INLINE inline
+using namespace std;
+discordance::var return_any (discordance::var any)
+                                                   {
+  return any;
+}
+int main ()
+          {
+    class apple{
+        string color="green";
+        discordance::var  weight="2kg";
+        apple(){
+            weight=2;
+            weight=2.0+weight;
+            cout<<weight;
+        }
+    };
+    discordance::deque<discordance::vector<int >> numbers={
+    {1,2,3,4,5,6,7,8,9,10},
+    {-1,-2,-3,-4,-5,-6,-7,-8,-9,-10}
+    };
+    for ( auto row : numbers ){
+        for ( auto column : row ){
+            cout<<column<<endl;
+        }
+    }
+    discordance::deque<discordance::var  > bucket={2.0, "chocolate milk", "15789"};
+    for ( auto item : bucket ){
+        cout<<item<<endl;
+    }
+    auto small_bucket=bucket.slice(1,2);
+    for ( auto item : small_bucket ){
+        cout<<item<<endl;
+    }
+    cout<<return_any(2.0)<<endl;
+    cout<<return_any(5)<<endl;
+    cout<<return_any("hello")<<endl;
+    return 0;
+}
+#undef LZZ_INLINE
+```
+##Full Documentation
+View the install instructions and full docs on github pages
+[https://neverlucky123.github.io/Discordant_Transpiler/]()
+
