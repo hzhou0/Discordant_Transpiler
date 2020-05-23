@@ -1,11 +1,11 @@
-##Introduction
+## Introduction
 <br>
 **Discordance is a language that compiles into C++.** Despite it's insistence on importing code via Copy Pasting, C++ is an wickedly fast and sometimes
 even readable language. Discordance attempts to highlight the good parts of C++ and paper over the bad parts.
 
 Discordance is just C++. It compiles into C++ source with no performance penalties, and the header is generated for you. 
-C++ constructs can be used in discordance, and vice versa. 
-##Overview
+C++ constructs can be used in discordance, and vice versa.   
+## Overview  
 **main.dis**
 ```c++
 #include <iostream>
