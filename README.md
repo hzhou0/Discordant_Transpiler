@@ -115,5 +115,5 @@ int main ()
 ```
 ## Full Documentation
 View the install instructions and full docs on github pages
-[https://neverlucky123.github.io/Discordant_Transpiler/](https://neverlucky123.github.io/Discordant_Transpiler/)
+[https://neverlucky123.github.io/Discordant_Transpiler/](https://hzhou0.github.io/Discordant_Transpiler/)
 
